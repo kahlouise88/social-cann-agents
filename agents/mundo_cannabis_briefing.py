@@ -51,7 +51,7 @@ def send_telegram_message(text: str, parse_mode: str = "HTML") -> bool:
 
 def fetch_recent_news() -> list:
     """
-    AUDITED NEWS FETCH - 2026 ONLY
+    GUARDIAN API NEWS FETCH - 2026 ONLY
 
     REQUIREMENTS (OBRIGATÓRIO):
     - APENAS notícias de 2026
@@ -59,9 +59,9 @@ def fetch_recent_news() -> list:
     - Cobertura: Brasil, UK, Espanha, Holanda, Alemanha + Europa
     - Log explícito de cada notícia
     """
-    api_key = os.getenv("NEWSAPI_KEY")
+    api_key = os.getenv("GUARDIAN_API_KEY")
     if not api_key:
-        print("❌ NEWSAPI_KEY not set")
+        print("❌ GUARDIAN_API_KEY not set")
         return []
 
     try:
@@ -73,64 +73,49 @@ def fetch_recent_news() -> list:
         from_date = year_start.strftime("%Y-%m-%d")
         to_date = today.strftime("%Y-%m-%d")
 
-        print(f"\n🔍 AUDITORIA DE NOTÍCIAS")
+        print(f"\n🔍 AUDITORIA DE NOTÍCIAS (Guardian API)")
         print(f"📅 Período: {from_date} a {to_date}")
         print(f"🌍 Regiões: Brasil, UK, Espanha, Holanda, Alemanha + Europa")
         print(f"✅ Critério: APENAS 2026 | URL OBRIGATÓRIO\n")
 
-        base_url = "https://newsapi.org/v2/everything"
+        base_url = "https://open-platform.theguardian.com/search"
 
         queries = [
-            # BRASIL (Portuguese) - PRIORIDADE 1
-            ("cannabis medicinal regulação Brasil 2026", "pt"),
-            ("cannabis medicinal mercado Brasil 2026", "pt"),
-            ("cannabis medicinal pesquisa Brasil 2026", "pt"),
-
-            # UK (English) - PRIORIDADE 1
-            ("medical cannabis UK 2026", "en"),
-            ("cannabis regulation UK 2026", "en"),
-
-            # ESPAÑA (Spanish) - PRIORIDADE 1
-            ("cannabis medicinal España 2026", "es"),
-            ("cannabis regulación España 2026", "es"),
-
-            # NETHERLANDS - PRIORIDADE 1
-            ("medical cannabis Netherlands 2026", "en"),
-            ("cannabis Holanda 2026", "en"),
-
-            # DEUTSCHLAND - PRIORIDADE 1
-            ("medical cannabis Germany 2026", "en"),
-            ("cannabis medicinal Deutschland 2026", "de"),
-
-            # EUROPA GERAL
-            ("medical cannabis Europe 2026", "en"),
-            ("cannabis regulation Europe 2026", "en"),
+            # Cannabis medicinal - PRIORIDADE 1
+            "cannabis medicinal",
+            "medical cannabis",
+            "cannabis regulation",
+            "cannabis legalization",
+            "cannabis healthcare",
+            "cannabis research",
+            "cannabis therapy",
         ]
 
         all_articles = []
         query_count = 0
 
-        for query, language in queries:
+        for query in queries:
             try:
                 params = {
                     "q": query,
-                    "from": from_date,
-                    "to": to_date,
-                    "sortBy": "publishedAt",
-                    "pageSize": 20,
-                    "language": language,
-                    "apiKey": api_key
+                    "from-date": from_date,
+                    "to-date": to_date,
+                    "order-by": "newest",
+                    "page-size": 50,
+                    "api-key": api_key,
+                    "show-fields": "byline,firstPublicationDate,headline"
                 }
 
                 response = requests.get(base_url, params=params, timeout=10)
 
                 if response.status_code == 200:
-                    articles = response.json().get("articles", [])
-                    print(f"   Query: '{query}' ({language}) → {len(articles)} notícias")
+                    data = response.json()
+                    articles = data.get("response", {}).get("results", [])
+                    print(f"   Query: '{query}' → {len(articles)} notícias")
                     all_articles.extend(articles)
                     query_count += 1
                 else:
-                    print(f"   ❌ Query falhou: '{query}'")
+                    print(f"   ❌ Query falhou: '{query}' (Status: {response.status_code})")
 
             except Exception as e:
                 print(f"   ❌ Erro: '{query}' - {e}")
@@ -142,14 +127,15 @@ def fetch_recent_news() -> list:
         articles_other_years = []
 
         for article in all_articles:
-            pub_date = article.get("publishedAt", "")
-            url = article.get("url", "")
-            title = article.get("title", "")
+            # Guardian API structure
+            pub_date_str = article.get("firstPublicationDate", "")
+            url = article.get("webUrl", "")
+            title = article.get("webTitle", "")
 
-            # Extract year from publishedAt (format: 2026-05-13T...)
-            if pub_date and len(pub_date) >= 4:
+            # Extract year from firstPublicationDate (format: 2026-05-13T...)
+            if pub_date_str and len(pub_date_str) >= 4:
                 try:
-                    year = int(pub_date[:4])
+                    year = int(pub_date_str[:4])
                 except:
                     year = 0
             else:
@@ -159,13 +145,13 @@ def fetch_recent_news() -> list:
             # CRITÉRIO 2: Deve ter URL
             if year == 2026 and url:
                 articles_2026.append(article)
-                print(f"   ✅ {pub_date[:10]} | {title[:60]}...")
+                print(f"   ✅ {pub_date_str[:10]} | {title[:60]}...")
             else:
                 if year != 2026:
                     articles_other_years.append({
                         'year': year,
                         'title': title[:50],
-                        'date': pub_date[:10] if pub_date else 'N/A'
+                        'date': pub_date_str[:10] if pub_date_str else 'N/A'
                     })
 
         # AUDITORIA: Mostrar rejeitadas
@@ -185,14 +171,14 @@ def fetch_recent_news() -> list:
         seen_urls = set()
         unique_articles = []
         for article in articles_2026:
-            url = article.get("url")
+            url = article.get("webUrl")
             if url not in seen_urls:
                 seen_urls.add(url)
                 unique_articles.append(article)
 
         # Sort by date (newest first)
         unique_articles.sort(
-            key=lambda x: x.get("publishedAt", ""),
+            key=lambda x: x.get("firstPublicationDate", ""),
             reverse=True
         )
 
@@ -216,14 +202,15 @@ def generate_briefing() -> str:
     if recent_news:
         news_context = "\n\n📰 NOTÍCIAS RECENTES PARA ANÁLISE (COM LINKS VERIFICÁVEIS):\n"
         for i, article in enumerate(recent_news[:15], 1):
-            title = article.get('title', 'Sem título')
-            source = article.get('source', {}).get('name', 'Unknown')
-            pub_date = article.get('publishedAt', 'Unknown')
-            url = article.get('url', '')
-            description = article.get('description', '')
+            # Guardian API uses webTitle, webUrl, firstPublicationDate
+            title = article.get('webTitle', 'Sem título')
+            source = "The Guardian"
+            pub_date = article.get('firstPublicationDate', 'Unknown')
+            url = article.get('webUrl', '')
+            description = article.get('trailText', '')
 
             news_context += f"\n{i}. {title}\n"
-            news_context += f"   📅 Data: {pub_date}\n"
+            news_context += f"   📅 Data: {pub_date[:10] if pub_date else 'Unknown'}\n"
             news_context += f"   📰 Fonte: {source}\n"
             if url:
                 news_context += f"   🔗 Link: {url}\n"
@@ -402,10 +389,11 @@ def main():
 
     if recent_news and len(recent_news) > 0:
         for i, article in enumerate(recent_news[:25], 1):
-            title = article.get('title', 'Notícia')
-            url = article.get('url', '')
-            source = article.get('source', {}).get('name', 'Unknown')
-            pub_date = article.get('publishedAt', '').split('T')[0]
+            # Guardian API fields
+            title = article.get('webTitle', 'Notícia')
+            url = article.get('webUrl', '')
+            source = "The Guardian"
+            pub_date = article.get('firstPublicationDate', '').split('T')[0]
 
             if url:  # ONLY if URL exists
                 title_short = (title[:45] + "...") if len(title) > 45 else title
