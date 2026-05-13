@@ -21,7 +21,12 @@
       "Bash(python3 -m json.tool)",
       "Bash(curl -s \"https://api.telegram.org/bot388870813:AAHEoQNuMf2lvsZV9ZGPsofrTnMESI376/getMe\")",
       "Bash(curl -s \"https://api.telegram.org/bot8888970813:AAHEdONuMfm2IvsZV9ZGPsofrTxWEcsl37c/getMe\")",
-      "Bash(curl -s \"https://api.telegram.org/bot8888970813:AAHEdONuMfm2IvsZV9ZGPsofrTxWEcsl37c/getUpdates\")"
+      "Bash(curl -s \"https://api.telegram.org/bot8888970813:AAHEdONuMfm2IvsZV9ZGPsofrTxWEcsl37c/getUpdates\")",
+      "Bash(timeout 60 bash -c 'until gh run view 25809369150 --repo kahlouise88/social-cann-agents 2>&1 | grep -q \"completed\"; do sleep 3; done')",
+      "WebFetch(domain:open-platform.theguardian.com)",
+      "Bash(curl -s \"https://open-platform.theguardian.com/search?q=cannabis&api-key=629219cf-604e-46cf-aea3-435bdd831e8d\")",
+      "Bash(curl -s \"https://open-platform.theguardian.com/api/search?q=cannabis&api-key=629219cf-604e-46cf-aea3-435bdd831e8d\")",
+      "Bash(curl -s \"https://api.theguardian.com/search?q=cannabis&api-key=629219cf-604e-46cf-aea3-435bdd831e8d\")"
     ]
   }
 }
