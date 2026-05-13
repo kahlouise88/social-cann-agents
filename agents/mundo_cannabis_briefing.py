@@ -294,6 +294,10 @@ def main():
     """Main function"""
     print(f"[{datetime.now().isoformat()}] Starting Mundo Cannabis Briefing Agent...")
 
+    # Fetch recent news
+    print("Fetching recent news...")
+    recent_news = fetch_recent_news()
+
     # Generate briefing
     print("Generating briefing from Claude...")
     briefing = generate_briefing()
@@ -317,7 +321,8 @@ def main():
     header = (
         f"📰 <b>Mundo Cannabis Briefing — {date_str}</b>\n\n"
         "Notícias da semana em cannabis medicinal para médicos prescritores.\n"
-        "Tom: analítico · estratégico · sóbrio · baseado em evidência.\n\n"
+        "Tom: analítico · estratégico · sóbrio · baseado em evidência.\n"
+        "Cobertura: Brasil, UK, Espanha, Holanda, Alemanha + Europa\n\n"
     )
 
     # Send header first
@@ -328,12 +333,31 @@ def main():
         send_telegram_message(msg, parse_mode="HTML")
         print(f"Sent message {i}/{len(telegram_messages)}")
 
+    # Build links reference section
+    links_section = "\n<b>🔗 LINKS DE REFERÊNCIA E FONTES:</b>\n\n"
+    if recent_news:
+        for i, article in enumerate(recent_news[:20], 1):
+            title = article.get('title', 'Notícia')
+            url = article.get('url', '')
+            source = article.get('source', {}).get('name', 'Unknown')
+            pub_date = article.get('publishedAt', '').split('T')[0]  # Just the date part
+
+            if url:
+                # Truncate long titles for Telegram
+                title_short = (title[:60] + "...") if len(title) > 60 else title
+                links_section += f"{i}. <a href='{url}'>{title_short}</a>\n"
+                links_section += f"   📅 {pub_date} | 📰 {source}\n\n"
+
+    # Send links section
+    if len(links_section) > 50:  # If there are actual links
+        send_telegram_message(links_section, parse_mode="HTML")
+
     # Send footer
     footer = (
         "\n---\n"
-        "📱 <b>Próxima execução:</b> Quarta e sexta-feira às 6h\n"
-        "✉️ Tem uma questão sobre cannabis medicinal? Responde esse bot.\n"
-        "#CannabisMedicinal #MédicoPrescritor #CannabisNoBrasil"
+        "📱 <b>Próxima execução:</b> Quarta e sexta-feira às 6h (UTC)\n"
+        "✉️ Dúvidas? Responde esse bot.\n\n"
+        "#CannabisMedicinal #MédicoPrescritor #Brasil #UK #Espanha #Holanda #Alemanha"
     )
     send_telegram_message(footer, parse_mode="HTML")
 
