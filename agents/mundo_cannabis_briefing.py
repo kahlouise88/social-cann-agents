@@ -50,7 +50,7 @@ def send_telegram_message(text: str, parse_mode: str = "HTML") -> bool:
 
 
 def fetch_recent_news() -> list:
-    """Fetch this week's news about cannabis medicinal from NewsAPI"""
+    """Fetch this week's news about cannabis medicinal from PRINCIPAIS countries + Europe"""
     api_key = os.getenv("NEWSAPI_KEY")
     if not api_key:
         print("⚠ NEWSAPI_KEY not set — usando conhecimento base do Claude")
@@ -59,43 +59,67 @@ def fetch_recent_news() -> list:
     try:
         from datetime import datetime, timedelta
 
-        # Get news from last 7 days
+        # Get news from last 14 days (wider range for international coverage)
         today = datetime.utcnow()
-        week_ago = today - timedelta(days=7)
-        from_date = week_ago.strftime("%Y-%m-%d")
-        to_date = today.strftime("%Y-%m-%d")
+        two_weeks_ago = today - timedelta(days=14)
+        from_date = two_weeks_ago.strftime("%Y-%m-%d")
 
         base_url = "https://newsapi.org/v2/everything"
 
-        # Multiple searches for comprehensive coverage
+        # PRINCIPAIS countries + rest of Europe
+        # Priority order: Brasil, UK, Spain, Netherlands, Germany, then rest of Europe
         queries = [
-            "cannabis medicinal regulação Brasil",
-            "cannabis medicinal pesquisa científica",
-            "cannabis medicinal mercado saúde",
-            "cannabis medicinal médicos prescritores",
-            "CBD THC terapêutico"
+            # BRASIL (Portuguese)
+            ("cannabis medicinal regulação Brasil", "pt"),
+            ("cannabis medicinal pesquisa Brasil", "pt"),
+            ("cannabis medicinal mercado Brasil", "pt"),
+
+            # UK (English)
+            ("medical cannabis UK regulation", "en"),
+            ("cannabis medicinal research UK", "en"),
+
+            # ESPAÑA (Spanish)
+            ("cannabis medicinal regulación España", "es"),
+            ("cannabis medicinal investigación España", "es"),
+
+            # NETHERLANDS (English/Dutch focus)
+            ("medical cannabis Netherlands", "en"),
+            ("cannabis regulation Netherlands", "en"),
+
+            # DEUTSCHLAND (English/German focus)
+            ("medical cannabis Germany regulation", "en"),
+            ("cannabis medicinal Deutschland", "de"),
+
+            # EUROPA GERAL (English)
+            ("medical cannabis Europe 2026", "en"),
+            ("cannabis medicinal European regulation", "en"),
+            ("cannabis research Europe 2026", "en"),
         ]
 
         all_articles = []
+        article_count = 0
 
-        for query in queries:
+        for query, language in queries:
             params = {
                 "q": query,
                 "from": from_date,
-                "to": to_date,
-                "sortBy": "relevancy",
-                "pageSize": 10,
-                "language": "pt",
+                "sortBy": "publishedAt",
+                "pageSize": 15,
+                "language": language,
                 "apiKey": api_key
             }
 
-            response = requests.get(base_url, params=params, timeout=10)
-            if response.status_code == 200:
-                articles = response.json().get("articles", [])
-                all_articles.extend(articles)
-                print(f"✓ Fetched {len(articles)} articles for '{query}'")
-            else:
-                print(f"⚠ NewsAPI error for '{query}': {response.status_code}")
+            try:
+                response = requests.get(base_url, params=params, timeout=10)
+                if response.status_code == 200:
+                    articles = response.json().get("articles", [])
+                    all_articles.extend(articles)
+                    article_count += len(articles)
+                    print(f"✓ {len(articles)} articles: '{query}' ({language})")
+                else:
+                    print(f"⚠ Error '{query}': {response.status_code}")
+            except Exception as e:
+                print(f"⚠ Failed '{query}': {e}")
 
         # Remove duplicates by URL
         seen_urls = set()
@@ -106,8 +130,14 @@ def fetch_recent_news() -> list:
                 seen_urls.add(url)
                 unique_articles.append(article)
 
-        print(f"✓ Total: {len(unique_articles)} unique articles this week")
-        return unique_articles[:20]  # Top 20
+        # Sort by date (newest first)
+        unique_articles.sort(
+            key=lambda x: x.get("publishedAt", ""),
+            reverse=True
+        )
+
+        print(f"✓ Total: {len(unique_articles)} unique articles from Brasil, UK, Spain, Netherlands, Germany + Europe")
+        return unique_articles[:30]  # Top 30
 
     except Exception as e:
         print(f"✗ Error fetching news: {e}")
@@ -129,34 +159,42 @@ def generate_briefing() -> str:
             if article.get('description'):
                 news_context += f"   Resumo: {article['description'][:200]}...\n"
 
-    prompt = f"""Você é repórter da newsletter semanal "Mundo Cannabis" — cobertura jornalística de cannabis medicinal para médicos prescritores no Brasil, escrita por Katharine Louise.
+    prompt = f"""Você é REPÓRTER INTERNACIONAL da newsletter "Mundo Cannabis" — cobertura de cannabis medicinal para médicos prescritores globais, escrita por Katharine Louise.
+
+COBERTURA GEOGRÁFICA (PRIORIDADE):
+🇧🇷 BRASIL (prioridade 1)
+🇬🇧 UK (prioridade 1)
+🇪🇸 ESPANHA (prioridade 1)
+🇳🇱 HOLANDA (prioridade 1)
+🇩🇪 ALEMANHA (prioridade 1)
+🇪🇺 Resto da Europa (prioridade 2)
 
 SUA MISSÃO ESTA SEMANA:
-Analisar as notícias DOS ÚLTIMOS 7 DIAS fornecidas abaixo e montar um BRIEFING JORNALÍSTICO — não é análise especulativa, é cobertura de fatos reais que aconteceram.
+Analisar as notícias DOS ÚLTIMOS 14 DIAS fornecidas abaixo e montar um BRIEFING JORNALÍSTICO INTERNACIONAL — não é análise especulativa, é cobertura de fatos reais que aconteceram no mundo.
 
 REGRAS DE SELEÇÃO (Prioridade absoluta):
-1. Escolha as 5-7 histórias MAIS RELEVANTES para médicos prescritores brasileiros
+1. Escolha as 5-8 histórias MAIS RELEVANTES (priorizando países principais)
 2. PRIORIZE:
-   - Regulação Brasil (decisões Anvisa, STJ, governo)
-   - Evidência científica nova (estudos, revisões sistemáticas)
-   - Mercado e tendências Brasil
-   - Contexto global COM impacto direto no Brasil
+   - Regulação cannabis medicinal (Brasil, UK, Espanha, Holanda, Alemanha)
+   - Evidência científica nova (pesquisa, estudos clínicos)
+   - Mercado e tendências internacionais
+   - Oportunidades de posicionamento global para médicos
 3. DESCARTE:
-   - Notícias genéricas sem relevância clínica
-   - Sensacionalismo ou especulação
-   - Conteúdo duplicado
-   - Notícias muito antigas ou sem data
+   - Sensacionalismo ou "lifestyle cannabis"
+   - Conteúdo não-medicinal
+   - Notícias duplicadas
+   - Notícias sem data ou muito antigas
 
-TOM JORNALÍSTICO:
-- Analítico, assertivo, baseado em fatos
-- Sem especulação — o que foi noticiado é noticiado
-- Contextualizar: por que essa notícia importa para médicos
+TOM JORNALÍSTICO PROFISSIONAL:
+- Analítico, assertivo, baseado em fatos verificados
+- Contexto internacional: por que isso importa para médicos em diferentes países?
 - Estrutura: fato → contexto → implicação prática
+- Oportunidade: identifique oportunidades de posicionamento ou movimento de mercado
 
 CRITÉRIO ABSOLUTO:
-Você está funcionando como uma reporter profissional. Cada história deve responder: "Por que um médico que prescreve cannabis precisa saber disso?"
+Você é uma repórter cobrindo cannabis medicinal GLOBALMENTE. Cada história deve responder: "Por que um médico que atua nessa área precisa saber disso?"
 
-NOTÍCIAS DA SEMANA PARA ANÁLISE:
+NOTÍCIAS DOS ÚLTIMOS 14 DIAS (Brasil, UK, Espanha, Holanda, Alemanha + Europa):
 {news_context}
 
 ESTRUTURA OBRIGATÓRIA DO BRIEFING:
