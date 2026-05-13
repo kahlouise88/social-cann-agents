@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Cann — Sistema Operacional ISO 9001</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1E1B18;--ink-mid:#5C5650;--ink-light:#9C9389;--ink-xlight:#C8C2BA;
+  --cream:#F6F1E9;--cream-2:#EDE7DB;--cream-3:#E2D9CC;--white:#FDFAF5;
+  --green:#1B6647;--green-2:#2A8A60;--green-bg:#E8F3EE;--green-border:#B2DFC8;
+  --amber:#A8620F;--amber-bg:#FDF3E3;--amber-border:#F0C97A;
+  --blue:#1A4A7A;--blue-bg:#E8F0F8;--blue-border:#A8C4E0;
+  --coral:#B83A22;--coral-bg:#FCEEE9;--coral-border:#F0B8A8;
+  --purple:#4A3080;--purple-bg:#EEEAF8;--purple-border:#C4B8E8;
+  --teal:#1A6060;--teal-bg:#E3F0F0;--teal-border:#A0D0D0;
+  --gold:#8B6914;--gold-bg:#FBF4E3;--gold-border:#E0C878;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--ink);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);letter-spacing:-.02em}
+.logo em{color:#7EC8A0;font-style:normal}
+.hdr-sub{font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.08em}
+
+/* TABS */
+.tabs{background:var(--ink);border-top:1px solid #2A2723;padding:0 40px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:60px;z-index:190}
+.tab{padding:0 18px;height:42px;font-size:12px;font-weight:500;color:var(--ink-light);border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;letter-spacing:.01em}
+.tab:hover{color:var(--cream)}
+.tab.active{color:#7EC8A0;border-bottom-color:#7EC8A0}
+
+/* CONTENT */
+.page{display:none;padding:32px 40px;max-width:1100px;margin:0 auto}
+.page.active{display:block}
+
+/* TYPOGRAPHY */
+h2{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:var(--ink);margin-bottom:6px;letter-spacing:-.02em}
+h3{font-size:15px;font-weight:500;color:var(--ink);margin:20px 0 8px}
+h4{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-light);margin:14px 0 6px}
+p{color:var(--ink-mid);line-height:1.7;margin-bottom:10px}
+.page-sub{font-size:13px;color:var(--ink-light);margin-bottom:28px;padding-bottom:16px;border-bottom:.5px solid var(--cream-3)}
+
+/* CARDS */
+.card{background:var(--white);border:.5px solid var(--cream-3);border-radius:12px;padding:20px;margin-bottom:14px}
+.card-accent{border-left:3px solid var(--green);border-radius:0 12px 12px 0}
+.card-amber{border-left:3px solid var(--amber)}
+.card-blue{border-left:3px solid var(--blue)}
+.card-coral{border-left:3px solid var(--coral)}
+.card-purple{border-left:3px solid var(--purple)}
+.card-teal{border-left:3px solid var(--teal)}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+/* SWOT */
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:0;border:.5px solid var(--cream-3);border-radius:12px;overflow:hidden}
+.swot-q{padding:20px;border:.25px solid var(--cream-3)}
+.swot-q h3{font-size:13px;font-weight:600;margin:0 0 10px;text-transform:uppercase;letter-spacing:.05em}
+.swot-q ul{list-style:none;padding:0}
+.swot-q ul li{font-size:12px;color:var(--ink-mid);padding:4px 0;border-bottom:.5px solid var(--cream-3);line-height:1.5}
+.swot-q ul li:last-child{border-bottom:none}
+.swot-q ul li::before{margin-right:6px}
+.sq-f{background:var(--green-bg)}.sq-f h3{color:var(--green)}.sq-f li::before{content:'✓';color:var(--green)}
+.sq-w{background:var(--amber-bg)}.sq-w h3{color:var(--amber)}.sq-w li::before{content:'△';color:var(--amber)}
+.sq-o{background:var(--blue-bg)}.sq-o h3{color:var(--blue)}.sq-o li::before{content:'→';color:var(--blue)}
+.sq-t{background:var(--coral-bg)}.sq-t h3{color:var(--coral)}.sq-t li::before{content:'!';color:var(--coral)}
+
+/* BADGE */
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.04em}
+.bg-green{background:var(--green-bg);color:var(--green)}
+.bg-amber{background:var(--amber-bg);color:var(--amber)}
+.bg-blue{background:var(--blue-bg);color:var(--blue)}
+.bg-coral{background:var(--coral-bg);color:var(--coral)}
+.bg-purple{background:var(--purple-bg);color:var(--purple)}
+.bg-teal{background:var(--teal-bg);color:var(--teal)}
+.bg-ink{background:var(--cream-2);color:var(--ink-mid)}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
+.kpi{background:var(--white);border:.5px solid var(--cream-3);border-radius:10px;padding:14px}
+.kpi-n{font-size:22px;font-weight:600;color:var(--ink);line-height:1}
+.kpi-l{font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+.kpi-n.green{color:var(--green)}.kpi-n.amber{color:var(--amber)}.kpi-n.blue{color:var(--blue)}
+
+/* POP */
+.pop{background:var(--white);border:.5px solid var(--cream-3);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.pop-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none}
+.pop-num{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink-xlight);min-width:32px}
+.pop-title{font-size:13px;font-weight:500;color:var(--ink);flex:1}
+.pop-arrow{color:var(--ink-light);font-size:14px;transition:transform .2s}
+.pop-arrow.open{transform:rotate(180deg)}
+.pop-body{display:none;border-top:.5px solid var(--cream-3);padding:16px}
+.pop-body.open{display:block}
+.pop-step{display:flex;gap:10px;padding:8px 0;border-bottom:.5px solid var(--cream-3);font-size:12px;color:var(--ink-mid);line-height:1.5}
+.pop-step:last-child{border-bottom:none}
+.pop-step-n{font-weight:600;color:var(--green);min-width:22px}
+.pop-meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+/* FLUXO */
+.fluxo{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:12px 0}
+.fbox{background:var(--white);border:.5px solid var(--cream-3);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:500;color:var(--ink);text-align:center;min-width:90px}
+.fbox.green{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.fbox.amber{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
+.fbox.blue{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue)}
+.fbox.coral{background:var(--coral-bg);border-color:var(--coral-border);color:var(--coral)}
+.farr{color:var(--ink-xlight);font-size:16px;padding:0 4px}
+
+/* IO TABLE */
+.io-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.io-table th{background:var(--cream-2);padding:8px 12px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-light);border-bottom:.5px solid var(--cream-3)}
+.io-table td{padding:8px 12px;border-bottom:.5px solid var(--cream-3);color:var(--ink-mid);vertical-align:top}
+.io-table tr:last-child td{border-bottom:none}
+.io-table tr:hover td{background:var(--cream)}
+
+/* JOB */
+.job-section{background:var(--cream);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.job-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-light);margin-bottom:6px}
+.job-list{list-style:none;padding:0}
+.job-list li{font-size:12px;color:var(--ink-mid);padding:3px 0;line-height:1.5}
+.job-list li::before{content:'→ ';color:var(--green)}
+
+/* ROTINA */
+.week-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.day-card{background:var(--white);border:.5px solid var(--cream-3);border-radius:8px;padding:12px}
+.day-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-light);margin-bottom:8px}
+.day-block{font-size:11px;color:var(--ink-mid);padding:5px 0;border-bottom:.5px solid var(--cream-3);line-height:1.4}
+.day-block:last-child{border-bottom:none}
+.day-block strong{display:block;font-size:10px;color:var(--ink);font-weight:600}
+
+/* NPS */
+.nps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nps-box{border-radius:10px;padding:14px;text-align:center}
+.nps-n{font-size:22px;font-weight:600;margin-bottom:4px}
+.nps-l{font-size:11px;opacity:.8;font-weight:500}
+.nps-action{font-size:11px;margin-top:8px;opacity:.9;line-height:1.4}
+
+/* DIVIDER */
+.divider{border:none;border-top:.5px solid var(--cream-3);margin:20px 0}
+
+/* ISO */
+.iso-req{background:var(--white);border:.5px solid var(--cream-3);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.iso-req-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer}
+.iso-req-title{font-size:13px;font-weight:500}
+.iso-req-clause{font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px}
+.iso-body{display:none;border-top:.5px solid var(--cream-3);padding:16px}
+.iso-body.open{display:block}
+
+/* PERSONA */
+.persona-card{background:var(--white);border:.5px solid var(--cream-3);border-radius:12px;padding:18px;margin-bottom:12px}
+.persona-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.persona-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;flex-shrink:0}
+.persona-name{font-size:14px;font-weight:500}
+.persona-desc{font-size:12px;color:var(--ink-light)}
+
+@media(max-width:700px){
+  .grid-2,.grid-3,.grid-4,.week-grid,.nps-grid{grid-template-columns:1fr}
+  .swot{grid-template-columns:1fr}
+  .tabs{padding:0 16px}
+  .page{padding:20px 16px}
+  .hdr{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">Social<em>Cann</em></div>
+  <div class="hdr-sub">Sistema Operacional · ISO 9001</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('iso')">ISO 9001</button>
+  <button class="tab" onclick="showTab('estrategia')">Estratégia</button>
+  <button class="tab" onclick="showTab('comercial')">Comercial</button>
+  <button class="tab" onclick="showTab('entrega')">Entrega</button>
+  <button class="tab" onclick="showTab('conteudo')">Conteúdo</button>
+  <button class="tab" onclick="showTab('felicidade')">Felicidade</button>
+  <button class="tab" onclick="showTab('operacoes')">Operações</button>
+  <button class="tab" onclick="showTab('rotina')">Rotina</button>
+</div>
+
+<!-- ══════════════════════════ ISO 9001 ══════════════════════════ -->
+<div class="page active" id="page-iso">
+  <h2>Sistema de Gestão da Qualidade</h2>
+  <p class="page-sub">Requisitos ISO 9001:2015 aplicados à Social Cann — empresa de estratégia e gestão de crescimento para médicos da cannabis medicinal</p>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-n green">3</div><div class="kpi-l">Contratos meta 30 dias</div></div>
+    <div class="kpi"><div class="kpi-n amber">R$4k</div><div class="kpi-l">Ticket mínimo/contrato</div></div>
+    <div class="kpi"><div class="kpi-n blue">R$12k</div><div class="kpi-l">Receita recorrente meta</div></div>
+    <div class="kpi"><div class="kpi-n">9.0</div><div class="kpi-l">NPS mínimo aceitável</div></div>
+    <div class="kpi"><div class="kpi-n">2h</div><div class="kpi-l">SLA de resposta</div></div>
+    <div class="kpi"><div class="kpi-n">72h</div><div class="kpi-l">Entrega do diagnóstico</div></div>
+  </div>
+
+  <h3>Cláusula 4 — Contexto da organização</h3>
+  <div class="card card-accent">
+    <h4>4.1 — Contexto interno e externo</h4>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:6px;text-transform:uppercase">Contexto interno</div>
+        <p style="font-size:12px">Empresa nascente, fundadora como único ativo humano no início. Alta dependência de autoridade pessoal. Operação enxuta com ferramentas gratuitas (Brevo, Tally, Canva Pro). Meta de curto prazo bem definida: 3 contratos em 30 dias.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--blue);margin-bottom:6px;text-transform:uppercase">Contexto externo</div>
+        <p style="font-size:12px">Mercado de cannabis medicinal em aceleração no Brasil. Alta sensibilidade reputacional do setor. Regulação ANVISA restritiva. Competição com agências genéricas de marketing médico. Janela de oportunidade aberta para pioneiros de posicionamento estratégico.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <h4>4.2 — Partes interessadas</h4>
+    <table class="io-table">
+      <thead><tr><th>Parte interessada</th><th>Necessidade/expectativa</th><th>Requisito relevante</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Clientes (médicos prescritores)</strong></td><td>Crescimento estruturado, captação qualificada, reputação protegida</td><td>Diagnóstico preciso, entrega dentro do prazo, devolutiva clara</td></tr>
+        <tr><td><strong>Fundadora (Katharine)</strong></td><td>Receita recorrente, autoridade de mercado, escalabilidade</td><td>POPs documentados, qualidade consistente, processos replicáveis</td></tr>
+        <tr><td><strong>Colaboradores futuros</strong></td><td>Clareza de função, autonomia com estrutura</td><td>Job descriptions definidos, POPs escritos antes de contratar</td></tr>
+        <tr><td><strong>Mercado / setor canábico</strong></td><td>Profissionalização, compliance, conteúdo técnico</td><td>Comunicação ética, sem narrativa ativista ou recreativa</td></tr>
+        <tr><td><strong>Reguladores (ANVISA/CFM)</strong></td><td>Conformidade nas comunicações médicas</td><td>Distanciamento de narrativas proibidas, compliance de conteúdo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Cláusula 4.4 — Entradas e Saídas do Sistema (Process Map)</h3>
+  <div class="card">
+    <table class="io-table">
+      <thead><tr><th>Processo</th><th>Entradas</th><th>Saídas</th><th>Critério de qualidade</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Prospecção</strong></td><td>Lista de prospects, perfil ideal de cliente</td><td>Lead qualificado, agendamento de call</td><td>Lead se enquadra nos critérios: médico cannabis, prática estabelecida, dor identificada</td></tr>
+        <tr><td><strong>Pré-diagnóstico</strong></td><td>Formulário Tally preenchido pelo cliente</td><td>Briefing de entrada, confirmação de call</td><td>Formulário 100% completo antes da call</td></tr>
+        <tr><td><strong>Call diagnóstica</strong></td><td>Briefing de entrada, roteiro de entrevista</td><td>Notas estruturadas de mapeamento</td><td>60–90min, sem dar solução — apenas mapear</td></tr>
+        <tr><td><strong>Relatório de diagnóstico</strong></td><td>Notas da call, documentos do cliente</td><td>PDF do diagnóstico escrito</td><td>Entregue em até 72h após a call</td></tr>
+        <tr><td><strong>Devolutiva</strong></td><td>Relatório aprovado internamente</td><td>Call de devolutiva, proposta de próximo passo</td><td>Clareza, direção concreta, sem generalização</td></tr>
+        <tr><td><strong>Conteúdo editorial</strong></td><td>Linhas editoriais, funil de conteúdo, calendário</td><td>Posts, carrosséis, reels, LinkedIn — publicados</td><td>Alinhamento com tom de voz, nenhum conteúdo revela a solução</td></tr>
+        <tr><td><strong>Feedback pós-entrega</strong></td><td>Formulário NPS (Tally), 7 dias após entrega</td><td>Nota NPS + resposta qualitativa</td><td>NPS ≥ 9 = promotor; NPS ≤ 6 = ação imediata</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Cláusula 6 — Análise SWOT (planejamento de riscos e oportunidades)</h3>
+  <div class="swot">
+    <div class="swot-q sq-f">
+      <h3>Forças</h3>
+      <ul>
+        <li>Especialização em nicho médico-regulado — sem genérico</li>
+        <li>Clareza incomum sobre o problema central do cliente</li>
+        <li>Visão sistêmica: posicionamento + reputação + captação integrados</li>
+        <li>Autoridade da fundadora rara e difícil de copiar</li>
+        <li>Metodologia centrada em diagnóstico antes de execução</li>
+        <li>Trajetória em ambientes críticos e regulados</li>
+        <li>Meta de curto prazo bem definida e hierarquizada</li>
+      </ul>
+    </div>
+    <div class="swot-q sq-w">
+      <h3>Fraquezas</h3>
+      <ul>
+        <li>Projeto iniciado do zero — sem ativos digitais prévios</li>
+        <li>Alta dependência da autoridade pessoal da fundadora</li>
+        <li>Proposta sofisticada demais para mercado que compra simples</li>
+        <li>Ciclo comercial longo — requer educação antes da conversão</li>
+        <li>Posicionamento em transição de categoria</li>
+        <li>Ausência de provas sociais concretas no início</li>
+        <li>Oferta complexa de comunicar em pitch curto</li>
+      </ul>
+    </div>
+    <div class="swot-q sq-o">
+      <h3>Oportunidades</h3>
+      <ul>
+        <li>Mercado canábico em aceleração — janela aberta</li>
+        <li>Vazio de concorrentes com nível estratégico real</li>
+        <li>Médicos frustrados com soluções táticas genéricas</li>
+        <li>Pequenos eventos como alavanca de fechamento</li>
+        <li>Expansão para YouTube e blog como ativos de autoridade</li>
+        <li>Internacionalização — Portugal, América Latina</li>
+        <li>Consolidação como referência em subterritório preciso</li>
+      </ul>
+    </div>
+    <div class="swot-q sq-t">
+      <h3>Ameaças</h3>
+      <ul>
+        <li>Agências genéricas com mais volume e visibilidade</li>
+        <li>Regulação ANVISA pode restringir comunicação</li>
+        <li>Mercado pode demorar a maturar para solução estratégica</li>
+        <li>Concorrentes especializados emergindo no nicho</li>
+        <li>Dependência de algoritmos para distribuição de conteúdo</li>
+        <li>Risco de dispersão entre múltiplas ambições estratégicas</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Cláusulas 8–10 — Requisitos do SGQ aplicados</h3>
+  <div id="iso-reqs"></div>
+</div>
+
+<!-- ══════════════════════════ ESTRATÉGIA ══════════════════════════ -->
+<div class="page" id="page-estrategia">
+  <h2>Departamento de Estratégia</h2>
+  <p class="page-sub">Núcleo da Social Cann — diagnóstico, posicionamento, arquitetura de crescimento e direção de todos os projetos de clientes</p>
+
+  <div class="card card-accent">
+    <h3>Job Description — Estrategista (Katharine Louise) · Fundadora</h3>
+    <div class="grid-2">
+      <div class="job-section">
+        <div class="job-label">Responsabilidades</div>
+        <ul class="job-list">
+          <li>Conduzir todas as calls diagnósticas de clientes</li>
+          <li>Escrever relatórios de diagnóstico estratégico</li>
+          <li>Realizar devolutivas estratégicas</li>
+          <li>Definir posicionamento, modelo de captação e arquitetura de crescimento de cada cliente</li>
+          <li>Aprovar todo conteúdo publicado pela Social Cann e por clientes</li>
+          <li>Direcionar linhas editoriais e tom de voz</li>
+          <li>Fechar contratos e apresentar propostas comerciais</li>
+          <li>Manter e atualizar POPs e sistema de qualidade</li>
+          <li>Ser a voz pública e intelectual da marca</li>
+        </ul>
+      </div>
+      <div class="job-section">
+        <div class="job-label">Competências exigidas</div>
+        <ul class="job-list">
+          <li>Visão sistêmica de negócios médicos</li>
+          <li>Leitura de contexto regulatório (ANVISA, CFM)</li>
+          <li>Capacidade de diagnóstico sem dar soluções prematuras</li>
+          <li>Comunicação clara, analítica e sem jargão</li>
+          <li>Domínio do ecossistema de cannabis medicinal no Brasil</li>
+          <li>Disciplina de processo e documentação</li>
+          <li>Produção de conteúdo estratégico denso</li>
+        </ul>
+      </div>
+    </div>
+    <div class="job-section" style="margin-top:10px">
+      <div class="job-label">Futuro — Analista de Estratégia (contratar quando: 5+ clientes ativos)</div>
+      <ul class="job-list">
+        <li>Apoiar pesquisa e análise de perfis de clientes antes das calls</li>
+        <li>Compilar relatórios com base nas notas da call</li>
+        <li>Monitorar métricas e KPIs dos clientes</li>
+        <li>Atualizar POPs e documentação do SGQ</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>POPs — Estratégia</h3>
+  <div id="pops-estrategia"></div>
+
+  <h3>Fluxo do processo de diagnóstico</h3>
+  <div class="fluxo">
+    <div class="fbox">Formulário Tally</div><div class="farr">→</div>
+    <div class="fbox amber">Call diagnóstica 60–90min</div><div class="farr">→</div>
+    <div class="fbox">Notas estruturadas</div><div class="farr">→</div>
+    <div class="fbox amber">Relatório PDF 48–72h</div><div class="farr">→</div>
+    <div class="fbox green">Devolutiva estratégica</div><div class="farr">→</div>
+    <div class="fbox blue">Proposta de próximo passo</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ COMERCIAL ══════════════════════════ -->
+<div class="page" id="page-comercial">
+  <h2>Departamento Comercial</h2>
+  <p class="page-sub">Prospecção ativa, qualificação de leads, fechamento e gestão do pipeline — tudo orientado ao Diagnóstico Estratégico como produto de entrada</p>
+
+  <div class="card card-amber">
+    <h3>Job Description — Comercial (Katharine Louise) · Fase inicial</h3>
+    <div class="grid-2">
+      <div class="job-section">
+        <div class="job-label">Responsabilidades</div>
+        <ul class="job-list">
+          <li>Prospecção ativa nos 38 prospects mapeados</li>
+          <li>Gestão do CRM — atualização diária de status</li>
+          <li>Abordagem por DM (Instagram e LinkedIn)</li>
+          <li>Qualificação de leads — filtrar perfil antes da call</li>
+          <li>Follow-up estruturado por etapa do pipeline</li>
+          <li>Apresentação de propostas comerciais</li>
+          <li>Fechamento de contratos</li>
+          <li>Registro de objeções para melhoria de script</li>
+        </ul>
+      </div>
+      <div class="job-section">
+        <div class="job-label">Futuro — SDR / Assistente Comercial (contratar quando: receita > R$20k/mês)</div>
+        <ul class="job-list">
+          <li>Primeiro contato com prospects — DM e e-mail</li>
+          <li>Qualificação inicial por formulário ou conversa</li>
+          <li>Agendamento de calls com a estrategista</li>
+          <li>Follow-up automático e manual</li>
+          <li>Manutenção do CRM atualizado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Pipeline comercial</h3>
+  <div class="fluxo">
+    <div class="fbox">Identificado</div><div class="farr">→</div>
+    <div class="fbox">Abordado</div><div class="farr">→</div>
+    <div class="fbox amber">Em conversa</div><div class="farr">→</div>
+    <div class="fbox amber">Call agendada</div><div class="farr">→</div>
+    <div class="fbox blue">Proposta enviada</div><div class="farr">→</div>
+    <div class="fbox green">Fechado</div>
+  </div>
+
+  <h3>POPs — Comercial</h3>
+  <div id="pops-comercial"></div>
+
+  <h3>Scripts prontos para uso</h3>
+  <div class="card">
+    <h4>Script DM de abertura (Instagram / LinkedIn)</h4>
+    <div class="job-section">
+      <p style="font-size:12px;font-style:italic;color:var(--ink)">"Olá, [nome]. Acompanho o seu trabalho com cannabis medicinal e percebi [observação específica e genuína sobre o conteúdo ou atuação deles]. Trabalho com estruturação estratégica para médicos prescritores — posicionamento, captação qualificada e reputação. Você toparia uma conversa de 20 minutos para eu entender melhor o seu momento?"</p>
+    </div>
+    <h4>Script de resposta sobre metodologia</h4>
+    <div class="job-section">
+      <p style="font-size:12px;font-style:italic;color:var(--ink)">"A Social Cann não começa pelo post. Começa pelo diagnóstico — entender onde o negócio está, o que está freando o crescimento e qual o modelo mais coerente para avançar. A metodologia conecta posicionamento, captação, reputação e monetização em um ecossistema organizado. Cada entrega é precedida por leitura estratégica, não por execução automática."</p>
+    </div>
+    <h4>Script de objeção de preço</h4>
+    <div class="job-section">
+      <p style="font-size:12px;font-style:italic;color:var(--ink)">"Entendo. O investimento está calibrado ao nível de profundidade que o diagnóstico exige. Se você comparar com um mês de gestão genérica que não resolve a raiz do problema, o valor é completamente diferente. Quer entender como a estrutura de fases pode funcionar para o seu momento?"</p>
+    </div>
+    <h4>Script para prospect que sumiu (dia 7)</h4>
+    <div class="job-section">
+      <p style="font-size:12px;font-style:italic;color:var(--ink)">"Oi [nome], queria saber se ainda faz sentido conversarmos. Se o momento mudou, sem problema — fico à disposição quando fizer sentido."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ ENTREGA ══════════════════════════ -->
+<div class="page" id="page-entrega">
+  <h2>Departamento de Entrega</h2>
+  <p class="page-sub">Execução do diagnóstico estratégico, relatórios, devolutivas e acompanhamento de clientes ativos — padrão ISO de qualidade em cada entrega</p>
+
+  <div class="card card-purple">
+    <h3>Job Description — Gestora de Entrega (Katharine Louise) · Fase inicial</h3>
+    <div class="grid-2">
+      <div class="job-section">
+        <div class="job-label">Responsabilidades</div>
+        <ul class="job-list">
+          <li>Conduzir calls diagnósticas com roteiro estruturado</li>
+          <li>Produzir relatórios de diagnóstico em PDF</li>
+          <li>Apresentar devolutivas estratégicas com clareza</li>
+          <li>Acompanhar clientes em contratos de estruturação</li>
+          <li>Revisar e aprovar todas as entregas antes de enviar</li>
+          <li>Garantir prazos — diagnóstico em até 72h</li>
+          <li>Documentar aprendizados pós-entrega nos POPs</li>
+        </ul>
+      </div>
+      <div class="job-section">
+        <div class="job-label">Futuro — Gestor(a) de Projetos (contratar quando: 8+ clientes ativos)</div>
+        <ul class="job-list">
+          <li>Coordenar cronogramas de entrega de cada cliente</li>
+          <li>Garantir que prazos dos POPs sejam cumpridos</li>
+          <li>Interface com clientes para atualizações de status</li>
+          <li>Compilar briefings antes das calls estratégicas</li>
+          <li>Organizar documentação de cada projeto no sistema</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>POPs — Entrega</h3>
+  <div id="pops-entrega"></div>
+
+  <h3>Tom de voz para comunicação com clientes</h3>
+  <div class="card">
+    <div class="grid-2">
+      <div class="job-section">
+        <div class="job-label">Nunca usar</div>
+        <ul class="job-list">
+          <li>Entusiasmo excessivo ou emojis em excesso</li>
+          <li>Linguagem de social media ou marketing</li>
+          <li>Promessas não sustentadas por diagnóstico</li>
+          <li>Jargão motivacional</li>
+          <li>Resposta antes de entender o contexto</li>
+        </ul>
+      </div>
+      <div class="job-section">
+        <div class="job-label">Sempre usar</div>
+        <ul class="job-list">
+          <li>Tom analítico com calor — pensa alto, explica o raciocínio</li>
+          <li>Direto e claro, sem rodeios</li>
+          <li>Peso de quem sabe o que está falando</li>
+          <li>Frase de exemplo: "Analisamos o que foi compartilhado e identificamos alguns pontos que precisamos aprofundar antes de dar uma direção."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CONTEÚDO ══════════════════════════ -->
+<div class="page" id="page-conteudo">
+  <h2>Departamento de Conteúdo</h2>
+  <p class="page-sub">Produção editorial estratégica — Instagram, LinkedIn, Mundo Cannabis — tudo subordinado ao funil de conversão para o Diagnóstico Estratégico</p>
+
+  <div class="card card-teal">
+    <h3>Job Description — Estrategista de Conteúdo (Katharine Louise) · Fase inicial</h3>
+    <div class="grid-2">
+      <div class="job-section">
+        <div class="job-label">Responsabilidades</div>
+        <ul class="job-list">
+          <li>Produzir carrosséis de 6–8 cards (copy completo)</li>
+          <li>Gravar reels no formato caixinha de perguntas</li>
+          <li>Escrever posts LinkedIn longos e analíticos</li>
+          <li>Curar e publicar quadro Mundo Cannabis (semanal)</li>
+          <li>Manter calendário editorial atualizado</li>
+          <li>Garantir que todo conteúdo respeita a regra de ouro</li>
+          <li>Responder comentários e DMs nas primeiras 2h</li>
+        </ul>
+      </div>
+      <div class="job-section">
+        <div class="job-label">Futuro — Produtor(a) de Conteúdo (contratar quando: receita > R$15k/mês)</div>
+        <ul class="job-list">
+          <li>Produzir artes no Canva com base nos textos aprovados</li>
+          <li>Agendar posts no Meta Business Suite</li>
+          <li>Monitorar métricas semanais (Instagram Insights, LinkedIn)</li>
+          <li>Pesquisar pautas para Mundo Cannabis</li>
+          <li>Fazer primeira edição de reels (cortes básicos)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Regras de conteúdo — inegociáveis</h3>
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--coral)">
+      <h4>Nunca fazer</h4>
+      <ul class="job-list">
+        <li>Listas numeradas "5 dicas de..." ou "3 formas de..."</li>
+        <li>Tom motivacional ou linguagem de guru</li>
+        <li>Revelar a solução — o conteúdo mostra o problema</li>
+        <li>Promessas de resultado sem fundamento</li>
+        <li>Copy genérico que poderia ser de qualquer agência</li>
+        <li>Narrativa ativista ou recreativa sobre cannabis</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--green)">
+      <h4>Sempre fazer</h4>
+      <ul class="job-list">
+        <li>Card 1 = tese forte e provocativa (capa)</li>
+        <li>Último card = CTA sóbrio para o Diagnóstico Estratégico</li>
+        <li>Copy que constrói raciocínio do card 1 ao último</li>
+        <li>Suspense e lacuna de curiosidade — nunca fechar</li>
+        <li>Legenda densa e reflexiva — termina com pergunta</li>
+        <li>8–12 hashtags nichadas, sem genéricas</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Cadência editorial mensal</h3>
+  <table class="io-table" style="margin-top:0">
+    <thead><tr><th>Dia</th><th>Formato</th><th>Canal</th><th>Função no funil</th></tr></thead>
+    <tbody>
+      <tr><td>Terça</td><td>Carrossel 6–8 cards</td><td>Instagram</td><td>Mover lead no funil (suspense/diagnóstico)</td></tr>
+      <tr><td>Quinta</td><td>Carrossel 6–8 cards + LinkedIn</td><td>Instagram + LinkedIn</td><td>Construir autoridade + prospecção B2B</td></tr>
+      <tr><td>1x/semana</td><td>Mundo Cannabis (carrossel)</td><td>Instagram</td><td>Autoridade de mercado + alcance</td></tr>
+      <tr><td>1x/semana</td><td>Reel — caixinha de perguntas</td><td>Instagram</td><td>Alcance + descoberta + humanização</td></tr>
+      <tr><td>A partir sem. 5</td><td>Post em inglês</td><td>LinkedIn + Instagram</td><td>Internacionalização — 20% do volume</td></tr>
+    </tbody>
+  </table>
+
+  <h3>POPs — Conteúdo</h3>
+  <div id="pops-conteudo"></div>
+</div>
+
+<!-- ══════════════════════════ FELICIDADE ══════════════════════════ -->
+<div class="page" id="page-felicidade">
+  <h2>Departamento de Felicidade do Cliente</h2>
+  <p class="page-sub">Coleta sistemática de feedback, NPS e retenção — garantindo que cada entrega gera resultado percebido e cliente promotor</p>
+
+  <div class="card card-accent">
+    <h3>Job Description — Customer Success (Katharine Louise) · Fase inicial</h3>
+    <div class="job-section">
+      <div class="job-label">Responsabilidades</div>
+      <ul class="job-list">
+        <li>Enviar pesquisa NPS 7 dias após cada entrega principal</li>
+        <li>Fazer check-in mensal humanizado com clientes ativos</li>
+        <li>Classificar NPS e acionar protocolo de resposta</li>
+        <li>Solicitar depoimentos de clientes promotores (NPS 9–10)</li>
+        <li>Registrar feedbacks como input para melhoria de POPs</li>
+        <li>Monitorar sinais de insatisfação antes que virem problema</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Classificação NPS e protocolos</h3>
+  <div class="nps-grid">
+    <div class="nps-box" style="background:var(--green-bg);border:.5px solid var(--green-border)">
+      <div class="nps-n" style="color:var(--green)">9–10</div>
+      <div class="nps-l" style="color:var(--green)">Promotor</div>
+      <div class="nps-action" style="color:var(--green)">Pedir depoimento em até 48h. Convidar para programa de indicação. Registrar como case de sucesso.</div>
+    </div>
+    <div class="nps-box" style="background:var(--amber-bg);border:.5px solid var(--amber-border)">
+      <div class="nps-n" style="color:var(--amber)">7–8</div>
+      <div class="nps-l" style="color:var(--amber)">Neutro</div>
+      <div class="nps-action" style="color:var(--amber)">Agendar call de alinhamento em 72h. Perguntar o que faltou. Ajustar entrega se necessário.</div>
+    </div>
+    <div class="nps-box" style="background:var(--coral-bg);border:.5px solid var(--coral-border)">
+      <div class="nps-n" style="color:var(--coral)">0–6</div>
+      <div class="nps-l" style="color:var(--coral)">Detrator</div>
+      <div class="nps-action" style="color:var(--coral)">Contato imediato — mesmo dia. Escuta sem defesa. Plano de recuperação em 24h. Documentar causa raiz.</div>
+    </div>
+  </div>
+
+  <h3>POPs — Felicidade do Cliente</h3>
+  <div id="pops-felicidade"></div>
+
+  <h3>Formulário NPS — perguntas padrão (Tally)</h3>
+  <div class="card">
+    <div class="job-section">
+      <p style="font-size:12px;font-style:italic;color:var(--ink-mid)">Mensagem de envio (WhatsApp, 7 dias após entrega):<br>"Olá, [nome]. Completamos a entrega do diagnóstico há uma semana. Queria entender como você está vendo o resultado — tanto o que ficou claro quanto o que ainda parece nebuloso. Preparei uma pesquisa curta (3 minutos): [link Tally]"</p>
+    </div>
+    <div class="job-section">
+      <div class="job-label">Perguntas do formulário</div>
+      <ul class="job-list">
+        <li>Em uma escala de 0 a 10, quanto você recomendaria a Social Cann para um colega?</li>
+        <li>O diagnóstico trouxe clareza sobre o que precisa mudar no seu negócio?</li>
+        <li>Houve algo que você esperava receber e não recebeu?</li>
+        <li>Qual foi o maior valor que o trabalho trouxe até agora?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ OPERAÇÕES ══════════════════════════ -->
+<div class="page" id="page-operacoes">
+  <h2>Departamento de Operações e Qualidade</h2>
+  <p class="page-sub">Infraestrutura, ferramentas, documentação de processos e melhoria contínua — base que sustenta todas as outras áreas</p>
+
+  <div class="card card-blue">
+    <h3>Job Description — Diretora de Operações (Katharine Louise) · Fase inicial</h3>
+    <div class="grid-2">
+      <div class="job-section">
+        <div class="job-label">Responsabilidades</div>
+        <ul class="job-list">
+          <li>Manter todos os POPs atualizados mensalmente</li>
+          <li>Gerenciar ferramentas: Canva Pro, Brevo, Tally, CRM</li>
+          <li>Configurar automações de e-mail (Brevo)</li>
+          <li>Garantir backup de todos os documentos de clientes</li>
+          <li>Revisar sistema de qualidade trimestralmente</li>
+          <li>Registrar não-conformidades e ações corretivas</li>
+          <li>Atualizar planilha de prospects semanalmente</li>
+        </ul>
+      </div>
+      <div class="job-section">
+        <div class="job-label">Stack de ferramentas</div>
+        <ul class="job-list">
+          <li>Canva Pro — produção visual de conteúdo</li>
+          <li>Brevo — e-mail marketing e automações</li>
+          <li>Tally — formulários (pré-diagnóstico, NPS)</li>
+          <li>CRM HTML — gestão dos 38 prospects</li>
+          <li>Instagram Business + LinkedIn — canais principais</li>
+          <li>Meta Business Suite — agendamento e métricas</li>
+          <li>WhatsApp Business — comunicação com clientes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Indicadores de desempenho (KPIs) — revisão semanal</h3>
+  <table class="io-table">
+    <thead><tr><th>Indicador</th><th>Meta</th><th>Frequência de revisão</th><th>Fonte</th></tr></thead>
+    <tbody>
+      <tr><td>Contratos ativos</td><td>3 em 30 dias / 5+ em 90 dias</td><td>Semanal</td><td>CRM</td></tr>
+      <tr><td>Ticket médio</td><td>R$4.000 (curto) / R$5–10k (médio)</td><td>Mensal</td><td>Financeiro</td></tr>
+      <tr><td>Taxa de fechamento</td><td>≥ 30% das calls diagnósticas</td><td>Mensal</td><td>CRM</td></tr>
+      <tr><td>NPS médio</td><td>≥ 9.0</td><td>Por entrega</td><td>Tally</td></tr>
+      <tr><td>Tempo de resposta a leads</td><td>≤ 2h dias úteis</td><td>Diário</td><td>WhatsApp / CRM</td></tr>
+      <tr><td>Prazo de entrega diagnóstico</td><td>≤ 72h após call</td><td>Por entrega</td><td>Calendário</td></tr>
+      <tr><td>Posts publicados/mês</td><td>8–12 Instagram + 4 LinkedIn</td><td>Mensal</td><td>Calendário editorial</td></tr>
+      <tr><td>Taxa de abertura e-mail (Brevo)</td><td>≥ 35%</td><td>Mensal</td><td>Brevo</td></tr>
+    </tbody>
+  </table>
+
+  <h3>POPs — Operações</h3>
+  <div id="pops-operacoes"></div>
+</div>
+
+<!-- ══════════════════════════ ROTINA ══════════════════════════ -->
+<div class="page" id="page-rotina">
+  <h2>Rotina Operacional Semanal</h2>
+  <p class="page-sub">Estrutura de blocos fixos por dia da semana — âncora operacional para TDAH e execução com consistência</p>
+
+  <div class="week-grid">
+    <div class="day-card">
+      <div class="day-name" style="color:var(--blue)">Segunda</div>
+      <div class="day-block"><strong>7h–9h</strong>Revisar DMs, e-mails e comentários do fim de semana</div>
+      <div class="day-block"><strong>9h–12h</strong>Prospecção ativa — avançar 5–8 prospects no pipeline do CRM</div>
+      <div class="day-block"><strong>14h–16h</strong>Revisar conteúdo da semana — ajustar legendas, agendar posts</div>
+      <div class="day-block"><strong>16h–17h</strong>Atualizar planilha de prospects com status e próxima ação</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name" style="color:var(--purple)">Terça</div>
+      <div class="day-block"><strong>9h</strong>Publicar carrossel Instagram (PT)</div>
+      <div class="day-block"><strong>9h–11h</strong>Responder comentários nas primeiras 2h pós-publicação</div>
+      <div class="day-block"><strong>14h–17h</strong>Bloco fixo de calls diagnósticas (horários disponíveis)</div>
+      <div class="day-block"><strong>17h–18h</strong>Trabalho de entrega para clientes ativos</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name" style="color:var(--teal)">Quarta</div>
+      <div class="day-block"><strong>9h–12h</strong>Produção de conteúdo da semana seguinte (escrever, criar no Canva)</div>
+      <div class="day-block"><strong>14h–16h</strong>Avanço de entregas estratégicas para clientes ativos</div>
+      <div class="day-block"><strong>16h–18h</strong>Pesquisa para quadro Mundo Cannabis</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name" style="color:var(--amber)">Quinta</div>
+      <div class="day-block"><strong>9h</strong>Publicar carrossel Instagram (PT) + post LinkedIn</div>
+      <div class="day-block"><strong>9h–11h</strong>Responder comentários e DMs</div>
+      <div class="day-block"><strong>14h–16h</strong>Follow-up de prospects — semana 2 da sequência de abordagem</div>
+      <div class="day-block"><strong>16h–17h</strong>Enviar propostas ou agendar calls de fechamento</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name" style="color:var(--green)">Sexta</div>
+      <div class="day-block"><strong>9h–10h</strong>Revisar KPIs da semana (Instagram Insights, LinkedIn, CRM)</div>
+      <div class="day-block"><strong>10h–11h</strong>Atualizar pipeline e status de clientes</div>
+      <div class="day-block"><strong>14h–15h</strong>Enviar NPS para clientes que completaram 7 dias de entrega</div>
+      <div class="day-block"><strong>15h–16h</strong>Planejar prioridades e bloco de foco da semana seguinte</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:24px">Regras de operação</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Blocos inegociáveis</h4>
+      <ul class="job-list">
+        <li>Calls diagnósticas apenas terça 14h–17h (nunca improvisadas)</li>
+        <li>Prospecção ativa segunda manhã — nunca saltar</li>
+        <li>Publicação terça e quinta 9h — programar na segunda</li>
+        <li>Revisão de KPIs toda sexta — mesmo que rápida</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Regras para TDAH</h4>
+      <ul class="job-list">
+        <li>Uma tarefa por vez — sem abrir múltiplas janelas</li>
+        <li>CRM atualizado imediatamente após cada conversa</li>
+        <li>Sábado é buffer — não culpa se a semana foi produtiva</li>
+        <li>Toda decisão de conteúdo passa pelo calendário — nada improvisa</li>
+        <li>Usar os POPs como âncora quando travar em uma tarefa</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── TAB NAVIGATION ───────────────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ─── POP TOGGLE ───────────────────────────────────────────────────
+function togglePop(id){
+  const b=document.getElementById('popb-'+id);
+  const a=document.getElementById('popa-'+id);
+  const open=b.classList.toggle('open');
+  a.classList.toggle('open',open);
+}
+
+// ─── POP BUILDER ──────────────────────────────────────────────────
+function buildPop(id,num,title,badge,badgeClass,steps,meta){
+  const stepsHTML=steps.map((s,i)=>`<div class="pop-step"><span class="pop-step-n">${i+1}</span><span>${s}</span></div>`).join('');
+  const metaHTML=meta?`<div class="pop-meta">${meta.map(m=>`<span class="badge bg-ink">${m}</span>`).join('')}</div>`:'';
+  return `<div class="pop">
+    <div class="pop-head" onclick="togglePop('${id}')">
+      <div class="pop-num">${num}</div>
+      <div class="pop-title">${title}</div>
+      <span class="badge ${badgeClass}" style="margin-right:8px">${badge}</span>
+      <div class="pop-arrow" id="popa-${id}">▾</div>
+    </div>
+    <div class="pop-body" id="popb-${id}">${stepsHTML}${metaHTML}</div>
+  </div>`;
+}
+
+// ─── ISO REQUIREMENTS ─────────────────────────────────────────────
+function buildISO(num,title,clause,cls,content){
+  return `<div class="iso-req">
+    <div class="iso-req-head" onclick="toggleISO('${num}')">
+      <span class="iso-req-title">${title}</span>
+      <span class="iso-req-clause badge ${cls}">${clause}</span>
+    </div>
+    <div class="iso-body" id="isob-${num}">${content}</div>
+  </div>`;
+}
+function toggleISO(num){
+  const b=document.getElementById('isob-'+num);
+  b.classList.toggle('open');
+}
+
+// ─── RENDER POPS ──────────────────────────────────────────────────
+const popsEstrategia=[
+  {id:'e1',num:'01',title:'Como conduzir uma call diagnóstica',badge:'Estratégia',cls:'bg-green',steps:[
+    'Confirmar agendamento 24h antes com link e duração (60–90min)',
+    'Ler o formulário Tally preenchido pelo cliente antes da call',
+    'Abrir com: "Vou fazer perguntas para entender o seu sistema — não vou dar respostas ainda"',
+    'Seguir roteiro: origem da prática → modelo atual de captação → o que está funcionando → o que está freando → objetivo dos próximos 12 meses',
+    'Nunca dar solução durante a call — apenas mapear e aprofundar',
+    'Registrar notas em tempo real ou gravar com autorização',
+    'Encerrar com: "Em até 72h você recebe o diagnóstico escrito. Agendar a devolutiva já?"'
+  ],meta:['Duração: 60–90min','Ferramenta: Google Meet ou Zoom','Registro: notas estruturadas']},
+  {id:'e2',num:'02',title:'Como escrever o relatório de diagnóstico',badge:'Estratégia',cls:'bg-green',steps:[
+    'Usar as notas da call — nunca de memória',
+    'Estrutura obrigatória: (1) Contexto atual, (2) O que está funcionando, (3) O que está freando, (4) Desalinhamentos identificados, (5) Direção estratégica recomendada, (6) Próximos passos prioritários',
+    'Linguagem: analítica, sem jargão de marketing, específica para esse médico',
+    'Nunca incluir recomendações genéricas — tudo deve ser específico ao caso',
+    'Revisar antes de enviar: o diagnóstico responde "por que o crescimento está preso"?',
+    'Salvar em PDF com nome: Diagnóstico_NomeMédico_Data.pdf',
+    'Enviar por e-mail com link para agendamento da devolutiva'
+  ],meta:['Prazo: até 72h após call','Formato: PDF','Extensão: 4–8 páginas']},
+  {id:'e3',num:'03',title:'Como conduzir a devolutiva estratégica',badge:'Estratégia',cls:'bg-green',steps:[
+    'Ler o relatório completo na véspera — sem apresentar de improviso',
+    'Abrir com o diagnóstico central em uma frase: "O que encontramos é..."',
+    'Apresentar os 3 desalinhamentos mais relevantes com evidências concretas',
+    'Mostrar a direção estratégica — o que precisa mudar e em que ordem',
+    'Apresentar a proposta de próximo passo (estruturação ou acompanhamento)',
+    'Espaço para perguntas — escutar mais do que falar nessa fase',
+    'Encerrar com CTA claro: proposta por escrito em até 48h'
+  ],meta:['Duração: 45–60min','Tom: analítico com calor','Objetivo: vender o próximo passo']},
+];
+
+const popsComercial=[
+  {id:'c1',num:'01',title:'Sequência de abordagem para novos prospects',badge:'Comercial',cls:'bg-amber',steps:[
+    'Dias 1–2: Seguir + interagir com 2–3 posts (curtir + comentar com profundidade real)',
+    'Dia 3: Enviar DM de abertura — observação genuína sobre o trabalho deles + proposta de conversa',
+    'Dias 5–7: Se não respondeu, enviar conteúdo de valor (link de post relevante) sem pitch',
+    'Dia 10: Segunda tentativa de DM — tom diferente, foco em resultado específico',
+    'Dia 14: Se silêncio total, mensagem de encerramento: "Fico à disposição quando fizer sentido"',
+    'Mover para Frio/Pausado no CRM — incluir em nutrição passiva via conteúdo'
+  ],meta:['Canal: Instagram DM ou LinkedIn','Atualizar CRM a cada passo','Nunca mais de 2 DMs sem resposta']},
+  {id:'c2',num:'02',title:'Qualificação de lead antes da call',badge:'Comercial',cls:'bg-amber',steps:[
+    'Verificar se é médico com prática ativa em cannabis medicinal (≥1 ano)',
+    'Verificar se tem alguma presença digital já iniciada (perfil com posts)',
+    'Confirmar que não está em início de prática — precisa de material para diagnosticar',
+    'Enviar formulário Tally de pré-análise antes de confirmar a call',
+    'Só confirmar call após formulário 100% preenchido',
+    'Se perfil não qualificado: responder com honestidade e indicar retorno futuro'
+  ],meta:['Ferramenta: Tally','Critério central: prática estabelecida + dor identificada']},
+  {id:'c3',num:'03',title:'Tratamento de objeção de preço',badge:'Comercial',cls:'bg-amber',steps:[
+    'Escutar sem interromper — entender qual é a objeção real',
+    'Nunca baixar preço como primeiro movimento',
+    'Responder com contexto de valor: "O investimento está calibrado ao nível de profundidade..."',
+    'Oferecer estrutura de fases se necessário — não desconto',
+    'Perguntar: "O que precisaria ser verdade para esse investimento fazer sentido?"',
+    'Se resistência persistir: deixar proposta aberta por 7 dias sem pressão'
+  ],meta:['Tom: calmo e firme','Nunca sinalizar urgência ou desconto espontâneo']},
+  {id:'c4',num:'04',title:'Follow-up de proposta enviada',badge:'Comercial',cls:'bg-amber',steps:[
+    'Enviar proposta por e-mail + WhatsApp com mensagem personalizada',
+    'Aguardar 48h sem contato',
+    'Dia 3: Mensagem neutra no WhatsApp — "Alguma dúvida sobre a proposta?"',
+    'Dia 7: Último follow-up — "Quero garantir que faz sentido para você antes de fechar a agenda"',
+    'Se silêncio após 7 dias: mover para Frio no CRM e encerrar ciclo comercial',
+    'Registrar resultado no CRM com motivo estimado'
+  ],meta:['Prazo total: 7 dias','Canal: WhatsApp + e-mail','Máximo: 3 contatos por proposta']},
+];
+
+const popsEntrega=[
+  {id:'en1',num:'01',title:'Checklist de entrega do diagnóstico',badge:'Entrega',cls:'bg-purple',steps:[
+    'Relatório revisado internamente antes de enviar',
+    'Verificar: há generalização? Tudo é específico ao caso?',
+    'Verificar: a direção estratégica é acionável?',
+    'Verificar: o próximo passo está claro?',
+    'Salvar PDF em pasta do cliente (nomear: Diagnóstico_NomeMédico_Data)',
+    'Enviar por e-mail com mensagem personalizada (não genérica)',
+    'Incluir link para agendamento da devolutiva no e-mail',
+    'Registrar data de envio no CRM — iniciar contagem de 7 dias para NPS'
+  ],meta:['Prazo: 72h após call','Revisar antes de enviar — nada sai sem revisão']},
+  {id:'en2',num:'02',title:'O que fazer quando algo sai errado',badge:'Entrega',cls:'bg-purple',steps:[
+    'Comunicar imediatamente ao cliente — antes que ele perceba sozinho',
+    'Assumir sem justificativa excessiva: "Identificamos um erro em..."',
+    'Apresentar solução junto ao reconhecimento do problema',
+    'Definir prazo de correção e cumprir',
+    'Documentar o que falhou — atualizar POP correspondente',
+    'Registrar como não-conformidade no sistema de qualidade'
+  ],meta:['Tom: adulto e direto','Sem drama e sem autopunição','Solução junto com reconhecimento']},
+];
+
+const popsConteudo=[
+  {id:'co1',num:'01',title:'Fluxo de produção de carrossel',badge:'Conteúdo',cls:'bg-teal',steps:[
+    'Selecionar tema no calendário editorial — verificar posição no funil',
+    'Escrever copy completo dos 6–8 cards antes de abrir o Canva',
+    'Revisar: card 1 é capa com tese forte? Último card tem CTA sóbrio?',
+    'Verificar regra de ouro: o conteúdo mostra o problema sem revelar a solução?',
+    'Criar artes no Canva usando template aprovado',
+    'Escrever legenda (3–5 parágrafos, terminar com pergunta ou reflexão)',
+    'Adicionar 8–12 hashtags nichadas',
+    'Agendar no Meta Business Suite para terça ou quinta 9h',
+    'Responder comentários nas primeiras 2h após publicação'
+  ],meta:['Frequência: 2x/semana','Sempre escrever copy antes de criar arte']},
+  {id:'co2',num:'02',title:'Fluxo de produção de reel (caixinha)',badge:'Conteúdo',cls:'bg-teal',steps:[
+    'Escolher pergunta da caixinha ou criar pergunta estratégica relacionada ao funil',
+    'Escrever roteiro: gancho exato (3s) + blocos de 10–15s + CTA',
+    'Ensaiar o roteiro em voz alta — verificar fluência natural',
+    'Preparar ambiente de gravação: iluminação, fundo, roupa sem logos',
+    'Gravar em câmera frontal — olhar direto para a lente',
+    'Editar: cortes nos blocos, legendas, trilha suave de fundo',
+    'Escrever legenda curta e impactante com CTA',
+    'Publicar ou agendar'
+  ],meta:['Formato: vertical 9:16','Duração: 45–90 segundos','Tom: direto, falado, sem leitura']},
+  {id:'co3',num:'03',title:'Produção do Mundo Cannabis (semanal)',badge:'Conteúdo',cls:'bg-teal',steps:[
+    'Na quarta-feira: pesquisar pautas da semana (ANVISA, PubMed, LinkedIn do setor, Cannabis & Saúde, Kaya Mind)',
+    'Selecionar: 1 notícia Brasil + 1 dado de mercado + 1 internacional + 1 curiosidade científica',
+    'Escrever copy dos 6 cards com informações reais e verificadas',
+    'Card 1: capa com data da edição e tema central',
+    'Card 6: CTA para salvar e ativar notificações',
+    'Criar artes no Canva — estilo jornalístico, paleta teal',
+    'Publicar às 9h da segunda-feira da semana seguinte'
+  ],meta:['Pesquisar sempre na semana de publicação','Usar apenas fontes primárias verificadas']},
+];
+
+const popsFelicidade=[
+  {id:'f1',num:'01',title:'Protocolo NPS pós-entrega',badge:'Felicidade',cls:'bg-green',steps:[
+    'D+7 após entrega: enviar mensagem personalizada no WhatsApp com link Tally',
+    'Aguardar 48h pela resposta',
+    'Se não respondeu: reenviar com mensagem diferente ("Ainda aberto para seu feedback quando puder")',
+    'Classificar nota: 9–10 = promotor / 7–8 = neutro / 0–6 = detrator',
+    'Acionar protocolo correspondente (ver classificação acima)',
+    'Registrar resultado no CRM com data e nota'
+  ],meta:['Ferramenta: Tally + WhatsApp','Prazo de classificação: 24h após receber']},
+  {id:'f2',num:'02',title:'Como solicitar depoimento (promotor)',badge:'Felicidade',cls:'bg-green',steps:[
+    'Somente para NPS 9–10 — nunca solicitar sem nota confirmada',
+    'Enviar mensagem no WhatsApp: "Fico muito feliz que o trabalho trouxe clareza. Você toparia deixar um depoimento? Pode ser em vídeo (1–2 min) ou por escrito — o que for mais fácil para você."',
+    'Enviar modelo de perguntas para orientar: O que você esperava? O que encontrou? O que mudou?',
+    'Agradecer independentemente de qualidade ou formato',
+    'Registrar depoimento na pasta de provas sociais',
+    'Usar em conteúdo e propostas comerciais (com autorização)'
+  ],meta:['Tom: leve e sem pressão','Dar opção de formato: vídeo ou escrito']},
+];
+
+const popsOperacoes=[
+  {id:'op1',num:'01',title:'Revisão semanal de KPIs (sexta-feira)',badge:'Operações',cls:'bg-blue',steps:[
+    'Abrir planilha/CRM e conferir: quantos prospects avançaram no pipeline?',
+    'Verificar: algum prazo de entrega perdido? Qual foi a causa?',
+    'Conferir métricas de Instagram Insights: alcance, impressões, salvamentos, visitas ao perfil',
+    'Conferir LinkedIn: visualizações de posts, novos seguidores, interações',
+    'Registrar NPS recebidos na semana',
+    'Anotar 1 aprendizado e 1 melhoria para a próxima semana',
+    'Atualizar status do projeto em cada área no dashboard'
+  ],meta:['Tempo estimado: 45–60min','Fazer SEMPRE — mesmo que rápido']},
+  {id:'op2',num:'02',title:'Atualização de POP após erro ou aprendizado',badge:'Operações',cls:'bg-blue',steps:[
+    'Identificar qual processo gerou o erro ou aprendizado',
+    'Localizar o POP correspondente neste documento',
+    'Adicionar ou ajustar o passo com a correção — data e motivo',
+    'Testar o POP atualizado na próxima execução',
+    'Se melhoria foi significativa: comunicar o que mudou e por quê'
+  ],meta:['Manutenção mínima: mensal','Todo erro documenta — nada some']},
+];
+
+// ─── INJECT POPS ──────────────────────────────────────────────────
+function inject(containerId, popsArray){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  el.innerHTML=popsArray.map(p=>buildPop(p.id,p.num,p.title,p.badge,p.cls,p.steps,p.meta)).join('');
+}
+inject('pops-estrategia',popsEstrategia);
+inject('pops-comercial',popsComercial);
+inject('pops-entrega',popsEntrega);
+inject('pops-conteudo',popsConteudo);
+inject('pops-felicidade',popsFelicidade);
+inject('pops-operacoes',popsOperacoes);
+
+// ─── ISO REQUIREMENTS ─────────────────────────────────────────────
+const isoReqs=[
+  {num:'81',title:'Cláusula 8.1 — Planejamento e controle operacional',clause:'ISO 8.1',cls:'bg-green',content:`
+    <p style="font-size:12px;color:var(--ink-mid)">A Social Cann controla a qualidade de suas entregas por meio de POPs documentados para cada processo crítico. Os critérios de aceitação de entrega estão definidos nos POPs de cada departamento. Toda entrega passa por revisão interna antes de chegar ao cliente.</p>
+    <div class="job-section"><div class="job-label">Processos controlados</div><ul class="job-list"><li>Diagnóstico estratégico (call + relatório + devolutiva)</li><li>Produção de conteúdo (carrossel, reel, LinkedIn)</li><li>Prospecção e fechamento comercial</li><li>Feedback e NPS pós-entrega</li></ul></div>
+  `},
+  {num:'82',title:'Cláusula 8.2 — Requisitos de serviços (entradas e saídas)',clause:'ISO 8.2',cls:'bg-blue',content:`
+    <p style="font-size:12px;color:var(--ink-mid)">Os requisitos de cada serviço estão definidos nas entradas e saídas do Process Map (ver aba ISO 9001, seção 4.4). Toda proposta comercial especifica claramente o que será entregue, em qual prazo e com qual critério de qualidade.</p>
+    <div class="job-section"><div class="job-label">Comunicação de requisitos ao cliente</div><ul class="job-list"><li>Proposta escrita com escopo, prazo e critérios</li><li>Formulário Tally de pré-análise (requisitos de entrada)</li><li>Devolutiva com entrega documentada em PDF</li></ul></div>
+  `},
+  {num:'84',title:'Cláusula 8.4 — Controle de processos externos',clause:'ISO 8.4',cls:'bg-amber',content:`
+    <p style="font-size:12px;color:var(--ink-mid)">Ferramentas externas utilizadas (Canva Pro, Brevo, Tally) são avaliadas periodicamente quanto à adequação ao propósito. Fornecedores de design freelance (quando contratados) recebem briefings estruturados com tom de voz e critérios de entrega.</p>
+    <div class="job-section"><div class="job-label">Critérios para fornecedores externos</div><ul class="job-list"><li>Alinhamento com tom de voz aprovado</li><li>Prazo cumprido conforme combinado</li><li>Qualidade verificada antes de envio ao cliente</li></ul></div>
+  `},
+  {num:'85',title:'Cláusula 8.5 — Produção e provisão de serviço',clause:'ISO 8.5',cls:'bg-purple',content:`
+    <p style="font-size:12px;color:var(--ink-mid)">A provisão de serviço ocorre sob condições controladas. O diagnóstico estratégico segue roteiro estruturado. O conteúdo segue calendário editorial com critérios de aprovação. Todo documento de entrega é identificado, datado e arquivado por cliente.</p>
+  `},
+  {num:'86',title:'Cláusula 8.6 — Liberação de serviços',clause:'ISO 8.6',cls:'bg-teal',content:`
+    <p style="font-size:12px;color:var(--ink-mid)">Nenhuma entrega é liberada sem revisão interna. O critério de liberação do diagnóstico: o relatório responde com precisão "por que o crescimento está preso nesse caso específico"? O critério de conteúdo: a regra de ouro foi respeitada (problema sem solução)?</p>
+  `},
+  {num:'10',title:'Cláusula 10 — Melhoria contínua',clause:'ISO 10',cls:'bg-coral',content:`
+    <p style="font-size:12px;color:var(--ink-mid)">A melhoria contínua ocorre por três mecanismos: (1) NPS pós-entrega — todo score abaixo de 9 gera análise de causa raiz e atualização de POP; (2) Revisão semanal de KPIs — desvios identificados geram ação corretiva na semana seguinte; (3) Revisão trimestral do SGQ — todos os POPs são revistos e atualizados.</p>
+    <div class="job-section"><div class="job-label">Cadência de revisão</div><ul class="job-list"><li>POPs: mensal ou após qualquer não-conformidade</li><li>KPIs: semanal (sexta-feira)</li><li>SGQ completo: trimestral</li><li>SWOT: semestral</li></ul></div>
+  `},
+];
+document.getElementById('iso-reqs').innerHTML=isoReqs.map(r=>buildISO(r.num,r.title,r.clause,r.cls,r.content)).join('');
+</script>
+</body>
+</html>

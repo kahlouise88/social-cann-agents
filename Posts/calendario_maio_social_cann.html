@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Cann — Calendário Editorial Maio 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1E1B18;
+  --ink-mid: #5C5650;
+  --ink-light: #9C9389;
+  --cream: #F6F1E9;
+  --cream-2: #EDE7DB;
+  --cream-3: #E2D9CC;
+  --white: #FDFAF5;
+  --green: #1B6647;
+  --green-2: #2A8A60;
+  --green-bg: #E8F3EE;
+  --amber: #A8620F;
+  --amber-bg: #FDF3E3;
+  --blue: #1A4A7A;
+  --blue-bg: #E8F0F8;
+  --coral: #B83A22;
+  --coral-bg: #FCEEE9;
+  --purple: #4A3080;
+  --purple-bg: #EEEAF8;
+  --teal: #1A6060;
+  --teal-bg: #E3F0F0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 14px; line-height: 1.6; }
+
+/* HEADER */
+.site-header {
+  background: var(--ink); color: var(--cream);
+  padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -.02em; }
+.logo em { color: #7EC8A0; font-style: normal; }
+.header-right { display: flex; gap: 16px; align-items: center; }
+.header-stat { text-align: right; }
+.header-stat-n { font-size: 18px; font-weight: 600; color: #7EC8A0; }
+.header-stat-l { font-size: 10px; color: var(--ink-light); text-transform: uppercase; letter-spacing: .05em; }
+
+/* CONTROLS */
+.controls {
+  background: var(--cream-2); border-bottom: 0.5px solid var(--cream-3);
+  padding: 14px 40px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; position: sticky; top: 64px; z-index: 90;
+}
+.filter-btn {
+  height: 30px; padding: 0 14px; border-radius: 15px;
+  border: 0.5px solid var(--cream-3); background: var(--white);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  color: var(--ink-mid); cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.filter-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.filter-btn:hover:not(.active) { border-color: var(--ink-light); }
+.filter-sep { width: 1px; height: 20px; background: var(--cream-3); }
+.search-box {
+  height: 30px; padding: 0 12px; border-radius: 15px;
+  border: 0.5px solid var(--cream-3); background: var(--white);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--ink);
+  outline: none; width: 200px;
+}
+.search-box:focus { border-color: var(--green-2); }
+
+/* LAYOUT */
+.main { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+/* WEEK HEADER */
+.week-head {
+  display: flex; align-items: center; gap: 12px;
+  margin: 32px 0 16px; padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--cream-3);
+}
+.week-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--ink-light); }
+.week-dates { font-size: 12px; color: var(--ink-light); }
+.week-theme { font-size: 13px; font-weight: 500; color: var(--ink-mid); }
+
+/* POST CARD */
+.post-card {
+  background: var(--white); border: 0.5px solid var(--cream-3);
+  border-radius: 12px; margin-bottom: 14px; overflow: hidden;
+  transition: box-shadow .2s;
+}
+.post-card:hover { box-shadow: 0 4px 20px rgba(30,27,24,.08); }
+.card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; cursor: pointer; user-select: none;
+}
+.card-date {
+  font-family: 'DM Serif Display', serif; font-size: 24px;
+  color: var(--ink-light); min-width: 42px; line-height: 1;
+}
+.card-meta { flex: 1; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.tag-ig { background: var(--purple-bg); color: var(--purple); }
+.tag-li { background: var(--blue-bg); color: var(--blue); }
+.tag-l1 { background: var(--green-bg); color: var(--green); }
+.tag-l2 { background: var(--amber-bg); color: var(--amber); }
+.tag-l3 { background: var(--teal-bg); color: var(--teal); }
+.tag-l4 { background: var(--coral-bg); color: var(--coral); }
+.card-toggle {
+  font-size: 18px; color: var(--ink-light); transition: transform .2s;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+}
+.card-toggle.open { transform: rotate(180deg); }
+
+/* CARD BODY */
+.card-body { display: none; border-top: 0.5px solid var(--cream-3); }
+.card-body.open { display: block; }
+.card-section { padding: 18px 20px; border-bottom: 0.5px solid var(--cream-3); }
+.card-section:last-child { border-bottom: none; }
+.section-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--ink-light); margin-bottom: 12px;
+}
+/* CARDS GRID */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.post-slide {
+  background: var(--cream); border: 0.5px solid var(--cream-3);
+  border-radius: 8px; padding: 14px;
+}
+.slide-num { font-size: 10px; font-weight: 600; color: var(--ink-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+.slide-text { font-size: 13px; color: var(--ink); line-height: 1.6; }
+/* LEGENDA / HASHTAGS */
+.legenda-box {
+  background: var(--cream); border-left: 3px solid var(--green);
+  border-radius: 0 8px 8px 0; padding: 14px 16px; margin-top: 0;
+}
+.legenda-text { font-size: 13px; color: var(--ink-mid); line-height: 1.7; white-space: pre-line; }
+.hashtags { margin-top: 10px; font-size: 12px; color: var(--green); line-height: 1.8; }
+/* COPY BUTTON */
+.copy-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.copy-btn {
+  height: 30px; padding: 0 14px; border-radius: 6px;
+  border: 0.5px solid var(--cream-3); background: var(--cream-2);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--ink-mid);
+  cursor: pointer; transition: all .15s;
+}
+.copy-btn:hover { background: var(--cream-3); }
+.copy-btn.copied { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+/* STATUS */
+.status-row { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--cream); border-top: 0.5px solid var(--cream-3); }
+.status-label { font-size: 11px; color: var(--ink-light); }
+.status-btn {
+  height: 26px; padding: 0 12px; border-radius: 13px; font-size: 11px; font-weight: 500;
+  border: 0.5px solid var(--cream-3); background: var(--white); color: var(--ink-mid);
+  cursor: pointer; transition: all .15s;
+}
+.status-btn.done { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+.status-btn.prod { background: var(--amber-bg); color: var(--amber); border-color: var(--amber); }
+.no-results { text-align: center; padding: 60px; color: var(--ink-light); font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo">Social<em>Cann</em></div>
+  <div class="header-right">
+    <div class="header-stat"><div class="header-stat-n" id="hTotal">18</div><div class="header-stat-l">Posts em maio</div></div>
+    <div class="header-stat"><div class="header-stat-n" id="hDone">0</div><div class="header-stat-l">Concluídos</div></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="filter-btn active" onclick="filter('todos',this)">Todos</button>
+  <button class="filter-btn" onclick="filter('instagram',this)">Instagram</button>
+  <button class="filter-btn" onclick="filter('linkedin',this)">LinkedIn</button>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" onclick="filter('pendente',this)">A fazer</button>
+  <button class="filter-btn" onclick="filter('producao',this)">Em produção</button>
+  <button class="filter-btn" onclick="filter('concluido',this)">Concluídos</button>
+  <div class="filter-sep"></div>
+  <input class="search-box" id="searchBox" placeholder="Buscar..." oninput="search()">
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+const posts = [
+  // SEMANA 1
+  {
+    id:1, semana:1, dia:"06", canal:"instagram", linha:"Estrutura de Crescimento",
+    titulo:"O que o seu ecossistema comunica antes de você falar",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"O que o seu ecossistema comunica antes de você falar.\n\nAntes da primeira consulta. Antes da primeira mensagem.\nAntes de qualquer palavra."},
+      {n:"Card 2", t:"Um médico que prescreve cannabis medicinal pode ter o melhor protocolo do Brasil.\n\nMas se o ecossistema que o cerca — perfil, posicionamento, comunicação, captação — envia sinais errados, o paciente certo nunca vai chegar.\n\nE o paciente errado vai continuar chegando."},
+      {n:"Card 3", t:"Ecossistema não é sinônimo de presença digital.\n\nEcossistema é o conjunto de percepções que alguém constrói sobre você antes de te contratar ou te consultar.\n\nInclui o que você publica. O que você não publica. Como você é encontrado. Como você é descrito. Como você posiciona o que faz."},
+      {n:"Card 4", t:"A maioria dos médicos de cannabis medicinal tem um problema que não é de conteúdo.\n\nÉ de arquitetura.\n\nNão falta post. Falta estrutura. Não falta frequência. Falta direção. Não falta esforço. Falta coerência entre o que se é e o que se comunica."},
+      {n:"Card 5", t:"Quando o ecossistema está desorganizado, três coisas acontecem:\n\nO paciente que chega não é o paciente certo.\nA autoridade percebida não reflete a autoridade real.\nO crescimento depende de sorte — não de método."},
+      {n:"Card 6", t:"Quando o ecossistema está estruturado, o oposto:\n\nA captação começa a ser qualificada.\nA reputação é protegida sem depender de performance diária.\nO crescimento tem fundamento — não flutuação."},
+      {n:"Card 7", t:"Reorganizar um ecossistema não começa por contratar alguém para postar.\n\nComeça por entender qual é o modelo de crescimento correto para esse médico, nesse momento, com esse perfil, nesse mercado.\n\nEssa leitura é o que diferencia estruturação estratégica de execução tática."},
+      {n:"Card 8 — CTA", t:"Se você olha para o seu ecossistema hoje e sente que algo não está coerente — que o esforço não está virando resultado — essa percepção merece ser investigada.\n\nO link está na bio."},
+    ],
+    legenda:"Existe um momento em que o médico percebe que o problema não é postar mais.\n\nÉ que o que está sendo comunicado não está alinhado com o que ele é — nem com o que ele quer construir.\n\nEsse momento é o começo de uma reorganização estratégica.\n\nO que o seu ecossistema comunica antes de você falar?",
+    hashtags:"#cannabismedicinal #estratégiadigital #medicobrasileiro #posicionamentomedico #crescimentoprofissional #socialcann #ecossistemaestratégico #autoridademedica"
+  },
+  {
+    id:2, semana:1, dia:"08", canal:"linkedin", linha:"Diagnóstico Estratégico",
+    titulo:"O médico que cresce sem estrutura cresce apesar de si mesmo",
+    formato:"Post LinkedIn — texto longo",
+    cards:[
+      {n:"Post completo", t:"Existe um padrão que aparece com frequência no mercado de cannabis medicinal.\n\nO médico cresceu. Tem pacientes. Tem audiência. Tem reputação no setor.\n\nMas o crescimento aconteceu de forma desordenada — empurrado por demanda, não puxado por posicionamento.\n\nE agora ele está preso em um modelo que não escolheu.\n\nAtende quem chega — não quem deveria atender.\nComunica o que tem tempo — não o que constrói autoridade.\nCapta por indicação — sem sistema, sem previsibilidade.\n\nEsse médico não tem um problema de conteúdo.\nTem um problema de arquitetura de crescimento.\n\nA diferença entre os dois é decisiva:\n\nQuem resolve o problema de conteúdo continua publicando mais.\nQuem resolve o problema de arquitetura reconstrói o modelo.\n\nNo segundo caso, o crescimento para de depender de performance diária — e começa a ter estrutura, fundamento, coerência.\n\nSe você reconhece esse padrão, vale a pena parar e mapear o que está sustentando o seu crescimento — e o que está freando.\n\nEssa leitura é o que fazemos no Diagnóstico Estratégico da Social Cann."}
+    ],
+    legenda:"O médico que cresce sem estrutura cresce apesar de si mesmo.\n\nEm algum momento, o modelo que sustentou o início deixa de ser suficiente.\n\nE reconhecer esse momento antes que ele cobre seu preço — isso é estratégia.",
+    hashtags:"#cannabismedicinal #estratégiadigital #crescimentomedico #diagnóstico #socialcann #posicionamento #medicodigital #autoridadeclinica"
+  },
+  // SEMANA 2
+  {
+    id:3, semana:2, dia:"13", canal:"instagram", linha:"Diagnóstico Estratégico",
+    titulo:"O problema não está onde você está procurando",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"O problema não está onde você está procurando.\n\nE por isso as soluções que você já tentou não resolveram."},
+      {n:"Card 2", t:"A maioria dos médicos de cannabis medicinal que busca apoio de comunicação ou estratégia digital começa com a mesma hipótese:\n\n\"Preciso postar mais.\"\n\"Meu problema é o algoritmo.\"\n\"Preciso de alguém para gerenciar minhas redes.\"\n\nEssas hipóteses raramente são a causa real do problema."},
+      {n:"Card 3", t:"Na maior parte dos casos, o diagnóstico real é diferente:\n\nO médico está comunicando para o público errado.\nOu está posicionado de forma vaga demais para atrair o paciente certo.\nOu tem autoridade real que não se traduz em autoridade percebida.\nOu cresceu rápido demais e o modelo que sustentou o início já não comporta o momento atual."},
+      {n:"Card 4", t:"Quando o problema não é diagnosticado corretamente, o investimento vai para o lugar errado.\n\nContrata-se gestão de redes sociais. O perfil fica mais bonito. O volume aumenta. O resultado permanece o mesmo.\n\nNão porque a execução foi ruim. Mas porque a execução não era o que precisava mudar."},
+      {n:"Card 5", t:"Um diagnóstico estratégico não é uma análise de métricas.\n\nÉ uma leitura do sistema:\nComo o médico está posicionado e o que isso está atraindo.\nOnde está o desalinhamento entre esforço e resultado.\nQual o modelo de crescimento mais coerente para esse momento.\nO que precisa ser reorganizado antes de qualquer execução."},
+      {n:"Card 6", t:"O diagnóstico não começa pelo perfil.\nComeça pelo médico.\n\nPelo que ele quer construir. Pelo tipo de prática que faz sentido para ele. Pela reputação que ele quer proteger. Pelo crescimento que ele consegue sustentar sem comprometer a qualidade do que entrega."},
+      {n:"Card 7", t:"Só depois de ter essa leitura clara é possível dizer:\n\nO que precisa mudar no posicionamento.\nQual modelo de captação faz sentido.\nComo a comunicação deve ser organizada.\nQual é o próximo passo mais inteligente.\n\nSem essa leitura, qualquer solução é um chute qualificado."},
+      {n:"Card 8 — CTA", t:"Se você tem a sensação de que está investindo esforço sem o retorno que esperava — isso é um sinal de que o diagnóstico ainda não foi feito.\n\nO link para conversar está na bio."},
+    ],
+    legenda:"Existe uma diferença entre investir em solução e investir em diagnóstico.\n\nA maioria pula direto para a solução — e descobre mais tarde que estava resolvendo o problema errado.\n\nO diagnóstico não é o passo antes da estratégia.\nÉ o passo que garante que a estratégia vai resolver o que precisa ser resolvido.",
+    hashtags:"#cannabismedicinal #diagnósticoestrategico #estratégiamedica #posicionamento #socialcann #crescimentomedico #autoridademedica #medicodigital"
+  },
+  {
+    id:4, semana:2, dia:"15", canal:"linkedin", linha:"Leitura de Mercado",
+    titulo:"O mercado de cannabis medicinal no Brasil está crescendo. Mas nem todo crescimento distribui oportunidades igualmente.",
+    formato:"Post LinkedIn — análise de mercado",
+    cards:[
+      {n:"Post completo", t:"O mercado de cannabis medicinal no Brasil está crescendo.\nMas nem todo crescimento distribui oportunidades igualmente.\n\nAlguns médicos estão capturando esse crescimento com estrutura — posicionamento claro, captação coerente, reputação construída com critério.\n\nOutros estão crescendo pelo volume — mais pacientes, mais demanda, mais pressão operacional, sem que o modelo de negócio tenha evoluído no mesmo ritmo.\n\nE há um terceiro grupo: médicos com autoridade real, reconhecimento no setor, repertório técnico consistente — mas que ainda não traduzem esse ativo em crescimento sustentável.\n\nA diferença entre os três grupos raramente é de competência clínica.\nÉ de modelo estratégico.\n\nO médico que estruturou o crescimento antes de a demanda chegar está em posição diferente de quem está correndo atrás da demanda hoje.\n\nNesse mercado em aceleração, a janela para construir posicionamento com método — antes que o espaço fique mais disputado — ainda está aberta.\n\nMas não estará para sempre."}
+    ],
+    legenda:"O crescimento de um mercado não beneficia todos os seus players da mesma forma.\n\nBeneficia quem estava posicionado para capturá-lo.\n\nConstruir esse posicionamento é uma decisão estratégica — não um resultado automático de ter boa clínica.",
+    hashtags:"#cannabismedicinal #mercadocanabico #estratégiadigital #posicionamentomedico #socialcann #crescimentoprofissional #autoridadeclinica #medicobrasileiro"
+  },
+  {
+    id:5, semana:2, dia:"17", canal:"instagram", linha:"Reputação e Autoridade",
+    titulo:"Autoridade percebida não é o mesmo que autoridade real",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"Autoridade percebida não é o mesmo que autoridade real.\n\nE a distância entre as duas tem um custo que a maioria não calcula."},
+      {n:"Card 2", t:"Existe uma quantidade enorme de médicos competentes no mercado de cannabis medicinal que são sistematicamente menos valorizados do que deveriam ser.\n\nNão porque não sabem o suficiente. Mas porque o que sabem não está sendo percebido com a intensidade que merece."},
+      {n:"Card 3", t:"Autoridade real é construída por anos de prática clínica, atualização técnica, casos complexos, decisões difíceis e resultado consistente.\n\nAutoridade percebida é construída por como esse repertório é comunicado, posicionado e sustentado ao longo do tempo.\n\nAs duas precisam caminhar juntas. Quando não caminham, há desperdício."},
+      {n:"Card 4", t:"O desperdício tem formas concretas:\n\nO médico recebe menos do que vale porque o mercado não percebe o nível do que ele entrega.\nOs pacientes que chegam não são os que fariam melhor uso do que ele oferece.\nAs oportunidades de referência, parceria e expansão passam para quem comunica melhor — não necessariamente para quem sabe mais."},
+      {n:"Card 5", t:"No mercado de cannabis medicinal, esse fenômeno é amplificado por uma característica específica do setor:\n\nA sensibilidade reputacional é alta.\nO espaço para erro de comunicação é pequeno.\nE a percepção de autoridade é construída de forma mais lenta — porque precisa ser construída com critério."},
+      {n:"Card 6", t:"Construir autoridade percebida nesse mercado não é uma questão de performance ou volume.\n\nÉ uma questão de coerência:\nEntre o que se sabe e o que se comunica.\nEntre o que se entrega e o que o mercado percebe.\nEntre o que se quer ser e como se está sendo visto."},
+      {n:"Card 7", t:"Proteger reputação enquanto se constrói autoridade é parte do trabalho.\n\nNesse setor, crescer rápido demais sem atenção reputacional pode custar mais do que crescer com método. A velocidade, sem fundamento, gera fragilidade — não posição."},
+      {n:"Card 8 — CTA", t:"A pergunta que vale fazer: o que o mercado percebe sobre você reflete quem você realmente é?\n\nSe a resposta é não — ou se você não sabe — isso merece atenção.\n\nO link está na bio."},
+    ],
+    legenda:"Existe uma pergunta que médicos de cannabis medicinal raramente fazem sobre si mesmos:\n\nO que o mercado percebe de mim reflete quem eu realmente sou?\n\nA diferença entre autoridade real e autoridade percebida é onde muitos médicos estão perdendo terreno — sem perceber.",
+    hashtags:"#cannabismedicinal #autoridademedica #reputacaoclinica #posicionamento #socialcann #medicodigital #estratégiamedica #crescimentoprofissional"
+  },
+  // SEMANA 3
+  {
+    id:6, semana:3, dia:"20", canal:"instagram", linha:"Captação Qualificada",
+    titulo:"O paciente errado não é acidente. É efeito de posicionamento.",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"O paciente errado não é acidente.\nÉ efeito de posicionamento."},
+      {n:"Card 2", t:"Quando um médico se queixa de que os pacientes que chegam não são os que ele quer atender — a queixa raramente está errada.\n\nMas a explicação que acompanha a queixa quase sempre aponta para o lugar errado:\n\n\"O algoritmo não me ajuda.\"\n\"Preciso de mais seguidores.\"\n\"As pessoas não entendem o que eu faço.\""},
+      {n:"Card 3", t:"O algoritmo não define qual paciente chega.\nO posicionamento define.\n\nO que você comunica sobre o que faz, para quem faz, de que forma faz — isso filtra a demanda antes que ela chegue até você.\n\nE quando esse filtro está calibrado de forma vaga ou incorreta, os pacientes que chegam são um reflexo direto disso."},
+      {n:"Card 4", t:"Captação qualificada não é uma questão de anúncio.\nÉ uma questão de arquitetura.\n\nComeça no posicionamento — em como o médico define e comunica para quem ele atende e o que o diferencia.\n\nPassa pela comunicação — que envia sinais específicos para um público específico.\n\nChega na captação — que é o resultado dessas decisões anteriores, não o ponto de partida."},
+      {n:"Card 5", t:"Quando o posicionamento está claro:\n\nA demanda que chega já está pré-filtrada.\nA consulta começa com expectativa alinhada.\nO atendimento flui com mais qualidade.\nA reputação é protegida — porque o médico está atendendo quem consegue atender bem."},
+      {n:"Card 6", t:"Quando o posicionamento está vago:\n\nO médico atende quem chega — não quem deveria chegar.\nA consulta exige mais calibração.\nO volume pode crescer, mas a qualidade do atendimento oscila.\nA reputação fica mais dependente do volume e menos do resultado."},
+      {n:"Card 7", t:"No mercado de cannabis medicinal, isso tem peso adicional.\n\nEsse é um mercado que exige confiança antes da consulta. O paciente que chega desinformado, com expectativa inadequada ou sem aderência ao perfil do médico — gera ruído clínico, operacional e reputacional.\n\nQualidade da captação é qualidade da prática."},
+      {n:"Card 8 — CTA", t:"Se os pacientes que chegam até você não são os que você quer — isso não é má sorte.\n\nÉ um diagnóstico.\n\nE diagnósticos têm solução.\n\nO link está na bio."},
+    ],
+    legenda:"Captação qualificada não começa no anúncio.\nNão começa no post.\nNão começa no algoritmo.\n\nComeça no posicionamento.\n\nE quando o posicionamento está errado, nenhuma execução resolve.",
+    hashtags:"#cannabismedicinal #captacaoqualificada #posicionamentomedico #estratégiadigital #socialcann #medicodigital #autoridademedica #crescimentoprofissional"
+  },
+  {
+    id:7, semana:3, dia:"22", canal:"linkedin", linha:"Estrutura de Crescimento",
+    titulo:"A armadilha da execução prematura",
+    formato:"Post LinkedIn — análise crítica",
+    cards:[
+      {n:"Post completo", t:"Existe uma armadilha que aparece cedo no crescimento de médicos de cannabis medicinal.\n\nEla tem nome: execução prematura.\n\nO médico identifica que precisa de presença digital. Contrata gestão de redes. Começa a produzir conteúdo. Investe em tráfego.\n\nO movimento é real. O esforço é genuíno.\nMas os resultados não vêm no ritmo esperado.\n\nE a hipótese imediata costuma ser:\n\"Preciso de mais execução.\"\n\"Preciso de melhor execução.\"\n\"Preciso de outra agência.\"\n\nA hipótese raramente considerada é:\n\"Talvez o problema não seja de execução.\"\n\nExecução prematura acontece quando se começa a produzir — posts, anúncios, conteúdo — antes de ter clareza sobre:\nQual é o modelo de crescimento correto para esse médico.\nQual público se quer atrair e por quê.\nQual diferencial sustenta a percepção de valor.\nQual é o objetivo de negócio que a comunicação deve servir.\n\nSem essa base, execução produz atividade — não resultado.\n\nA pergunta que vale fazer antes de contratar mais execução:\nO problema que você está tentando resolver está diagnosticado corretamente?"}
+    ],
+    legenda:"Mais execução não resolve problema de estrutura.\n\nE o diagnóstico correto do problema é o que diferencia quem está investindo de quem está gastando.",
+    hashtags:"#cannabismedicinal #estratégiadigital #execucaoprematura #posicionamento #socialcann #crescimentomedico #diagnosticoestrategico #medicodigital"
+  },
+  {
+    id:8, semana:3, dia:"24", canal:"instagram", linha:"Posicionamento Estratégico",
+    titulo:"Comunicar muito não é o mesmo que comunicar bem",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"Comunicar muito não é o mesmo que comunicar bem.\n\nE no mercado de cannabis medicinal, a diferença entre as duas coisas é mais custosa do que parece."},
+      {n:"Card 2", t:"Há médicos que publicam todos os dias. Têm frequência, consistência, volume.\n\nE continuam com dificuldade para atrair o paciente certo. Para diferenciar o que fazem. Para converter audiência em demanda qualificada.\n\nNão porque publicam pouco. Mas porque o que publicam não está estrategicamente alinhado com o que querem construir."},
+      {n:"Card 3", t:"Comunicação estratégica não é sobre volume.\nÉ sobre coerência.\n\nCoerência entre o que o médico é e o que o mercado percebe.\nEntre o que ele entrega e como ele posiciona esse valor.\nEntre a frequência da publicação e a profundidade do que é dito."},
+      {n:"Card 4", t:"No mercado de cannabis medicinal, comunicar sem estratégia tem riscos específicos:\n\nA sensibilidade do tema exige cuidado narrativo que vai além de boas intenções.\nO compliance regulatório limita o que pode ser dito — e como pode ser dito.\nA percepção de autoridade é frágil nesse mercado e se constrói lentamente."},
+      {n:"Card 5", t:"Comunicação estratégica nesse setor começa por entender:\n\nQual autoridade precisa ser percebida.\nPor quem essa percepção precisa ser construída.\nEm que contexto ela será testada.\nQual é a consequência commercial dessa percepção."},
+      {n:"Card 6", t:"Só depois disso faz sentido definir:\nO que publicar.\nComo publicar.\nCom que frequência.\nEm que formato.\nCom que tom.\n\nFazer essas perguntas na ordem errada é o que transforma esforço de comunicação em atividade sem resultado."},
+      {n:"Card 7", t:"A distinção entre comunicação estratégica e execução de conteúdo é mais importante do que parece.\n\nExecução de conteúdo produz posts.\nComunicação estratégica constrói percepção.\n\nUma alimenta a outra — mas não são a mesma coisa. E contratar uma esperando o resultado da outra é o ponto de partida para a frustração."},
+      {n:"Card 8 — CTA", t:"Se você está publicando sem sentir que está construindo autoridade — talvez o que falte não seja mais conteúdo.\n\nO link está na bio."},
+    ],
+    legenda:"Frequência não é estratégia.\nVolume não é autoridade.\nPresença não é posicionamento.\n\nA diferença entre comunicar muito e comunicar bem é onde muitos médicos estão perdendo terreno.",
+    hashtags:"#cannabismedicinal #comunicacaostrategica #posicionamentomedico #autoridade #socialcann #estratégiadigital #medicodigital #crescimentoprofissional"
+  },
+  // SEMANA 4
+  {
+    id:9, semana:4, dia:"27", canal:"instagram", linha:"Estrutura de Crescimento",
+    titulo:"O que separa crescimento sustentável de crescimento frágil",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"O que separa crescimento sustentável de crescimento frágil.\n\nNão é sorte. Não é algoritmo. Não é volume de posts."},
+      {n:"Card 2", t:"Crescimento frágil tem uma característica central: ele depende de performance contínua para se manter.\n\nPara de postar — a demanda cai.\nPara de anunciar — o fluxo some.\nPara de aparecer — a autoridade desaparece.\n\nEsse modelo funciona enquanto a energia se sustenta. E quando a energia não se sustenta — ele para."},
+      {n:"Card 3", t:"Crescimento sustentável tem lógica diferente.\n\nEle é construído sobre ativos — não sobre atividade.\n\nAtivos de reputação que funcionam independentemente da frequência de publicação.\nModelos de captação que não dependem de presença diária.\nPosicionamento que filtra a demanda correta antes que ela chegue."},
+      {n:"Card 4", t:"No mercado de cannabis medicinal, a distinção tem peso extra:\n\nEsse mercado tem jornada de confiança longa.\nO paciente não toma decisão em impulso.\nA reputação importa mais do que o alcance.\n\nMédicos que constroem ativos reputacionais nesse mercado não precisam performar todo dia. Já construíram percepção suficiente para que a demanda qualificada chegue com mais constância."},
+      {n:"Card 5", t:"Mas construir esses ativos exige uma escolha prévia:\n\nEntender qual modelo de crescimento faz sentido para esse médico.\nNesse momento. Com esse volume de prática. Com essa reputação. Com esse nível de autoridade.\n\nEssa leitura não pode ser genérica. Crescimento sem diagnóstico produz movimento — não direção."},
+      {n:"Card 6", t:"A diferença entre os dois tipos de crescimento também aparece no esforço:\n\nGrowth frágil exige mais e mais — mais posts, mais anúncios, mais energia — para manter o mesmo resultado.\n\nGrowth sustentável exige investimento inicial em estrutura — e depois demanda proporcionalmente menos esforço para se manter."},
+      {n:"Card 7", t:"Construir crescimento sustentável no mercado de cannabis medicinal é possível.\nMas exige uma sequência que a maioria não segue:\n\nPrimeiro, diagnóstico.\nDepois, estruturação.\nSó então, execução.\n\nInverter essa sequência — começar pela execução sem estrutura — é o que transforma esforço em custo sem retorno."},
+      {n:"Card 8 — CTA", t:"Se o seu crescimento depende de você performar todos os dias para se manter — esse é um modelo que merece ser revisto.\n\nO link está na bio."},
+    ],
+    legenda:"Crescimento sem estrutura é crescimento frágil.\n\nE crescimento frágil não é sustentável — é exaustivo.\n\nA diferença está no modelo, não no esforço.",
+    hashtags:"#cannabismedicinal #crescimentosustentavel #estratégiadigital #posicionamento #socialcann #medicodigital #autoridademedica #estruturaestrategica"
+  },
+  {
+    id:10, semana:4, dia:"29", canal:"linkedin", linha:"Diagnóstico Estratégico",
+    titulo:"Por que o Diagnóstico Estratégico existe",
+    formato:"Post LinkedIn — apresentação da oferta",
+    cards:[
+      {n:"Post completo", t:"O Diagnóstico Estratégico da Social Cann existe por uma razão simples:\n\nA maioria dos médicos de cannabis medicinal que busca apoio para crescimento começa pela solução — antes de ter diagnosticado o problema.\n\nIsso não é crítica. É um padrão estrutural do mercado.\n\nQuando o desconforto aparece — resultados abaixo do esperado, captação irregular, esforço sem retorno proporcional — a tendência é buscar execução:\nMais posts. Melhor design. Outro gestor de tráfego. Nova agência.\n\nO que raramente se busca antes de contratar execução é uma leitura estratégica do sistema:\nQual é o modelo de crescimento mais coerente para esse médico?\nOnde está o desalinhamento real entre o que se faz e o que se obtém?\nO que precisa mudar antes de qualquer execução?\n\nEssas perguntas são o que o Diagnóstico Estratégico responde.\n\nNão é consultoria vaga. É leitura estruturada do negócio médico — posicionamento, captação, reputação, comunicação, modelo operacional — com entrega de diagnóstico escrito e devolutiva estratégica.\n\nO próximo passo é esse diagnóstico. O que vem depois depende do que ele revelar."}
+    ],
+    legenda:"A Social Cann não começa pela execução.\nComeça pelo diagnóstico.\n\nPorque o que mais desperdiça investimento no crescimento de médicos de cannabis medicinal é resolver o problema errado com competência.",
+    hashtags:"#cannabismedicinal #diagnosticoestrategico #socialcann #estratégiadigital #posicionamentomedico #crescimentomedico #autoridadeclinica #medicodigital"
+  },
+  {
+    id:11, semana:4, dia:"31", canal:"instagram", linha:"Leitura de Mercado",
+    titulo:"O que o mercado de cannabis medicinal ainda não resolveu",
+    formato:"Carrossel — 8 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"O que o mercado de cannabis medicinal ainda não resolveu.\n\nE por que isso é relevante para quem está construindo autoridade nele agora."},
+      {n:"Card 2", t:"O mercado brasileiro de cannabis medicinal está em amadurecimento acelerado.\n\nNovos prescritores. Novas regulações. Mais demanda. Mais produtos. Mais concorrência.\nO setor que era de nicho está se tornando mainstream — com toda a complexidade que isso traz."},
+      {n:"Card 3", t:"Mas esse crescimento não resolveu alguns problemas estruturais que afetam diretamente os médicos que atuam nele:\n\nA confusão entre autoridade clínica e autoridade percebida — muitos médicos competentes são menos reconhecidos do que deveriam.\nA falta de modelo de crescimento — muitos crescem por volume, sem estrutura, sem método.\nA fragilidade reputacional — um mercado sensível, onde erros de comunicação têm custo alto e reparação lenta."},
+      {n:"Card 4", t:"Esses problemas não são individuais. São sistêmicos.\n\nE quem estiver posicionado para navegar esse cenário com mais estrutura — antes que o mercado fique mais disputado — estará em posição diferente dos que chegarem depois."},
+      {n:"Card 5", t:"O que diferencia os médicos que estão capturando o crescimento do mercado dos que estão apenas crescendo junto com ele?\n\nEm geral: um modelo de crescimento consciente.\nCom posicionamento deliberado.\nCom captação coerente.\nCom reputação protegida.\nCom comunicação alinhada ao que se quer construir — não apenas ao que está em pauta."},
+      {n:"Card 6", t:"Construir esse modelo não é um processo de semanas.\nMas também não precisa ser de anos.\n\nComeça por uma leitura honesta e estruturada do momento atual:\nOnde estou? O que está funcionando? O que está freando? O que precisa mudar antes de qualquer passo seguinte?"},
+      {n:"Card 7", t:"O mercado ainda está em formação.\nA disputa por autoridade ainda está aberta.\nA janela para construir posicionamento com método — antes que o espaço fique saturado — ainda existe.\n\nMas ela tem prazo."},
+      {n:"Card 8 — CTA", t:"Se você está no mercado de cannabis medicinal e quer entender onde está a sua oportunidade nesse cenário — essa conversa faz sentido.\n\nO link está na bio."},
+    ],
+    legenda:"O mercado de cannabis medicinal está crescendo.\nMas crescimento de mercado não é sinônimo de oportunidade para todos os players.\n\nÉ sinônimo de oportunidade para quem está posicionado para capturá-lo.",
+    hashtags:"#cannabismedicinal #mercadocanabico #estratégiadigital #posicionamento #socialcann #crescimentoprofissional #autoridademedica #medicobrasileiro"
+  },
+  // POSTS LINKEDIN ADICIONAIS
+  {
+    id:12, semana:2, dia:"20", canal:"linkedin", linha:"Captação Qualificada",
+    titulo:"O custo oculto de atender quem não deveria estar na sua agenda",
+    formato:"Post LinkedIn — reflexão estratégica",
+    cards:[
+      {n:"Post completo", t:"Existe um custo que a maioria dos médicos de cannabis medicinal não calcula:\n\nO custo de atender quem não deveria estar na agenda.\n\nNão é um custo financeiro direto. É mais sutil — e mais caro no longo prazo.\n\nQuando o posicionamento está impreciso, os pacientes que chegam não têm o perfil ideal para o tipo de prática que o médico quer desenvolver.\n\nEles chegam com expectativas desalinhadas.\nDemandam mais calibração.\nAbsorvem mais energia para resultados menores.\nE muitas vezes não geram o tipo de vínculo clínico que o médico valoriza.\n\nO problema não é o paciente. É o filtro que falhou antes que ele chegasse.\n\nCaptar o paciente certo não é questão de sorte ou de nível de visibilidade.\n\nÉ o resultado direto de um posicionamento que comunica, com clareza, para quem você atende — e, implicitamente, para quem você não atende.\n\nIsso se constrói. E quando está construído, muda a qualidade de toda a prática."}
+    ],
+    legenda:"Atender quem não deveria estar na sua agenda tem um custo que não aparece na planilha financeira.\n\nMas aparece na qualidade do dia de trabalho — e na lentidão do crescimento.",
+    hashtags:"#cannabismedicinal #captacaoqualificada #posicionamentomedico #estratégia #socialcann #crescimentomedico #autoridadeclinica"
+  },
+  {
+    id:13, semana:3, dia:"27", canal:"linkedin", linha:"Reputação",
+    titulo:"No mercado de cannabis medicinal, reputação não é camada estética",
+    formato:"Post LinkedIn — análise setorial",
+    cards:[
+      {n:"Post completo", t:"No mercado de cannabis medicinal, reputação não é camada estética.\nÉ um ativo clínico, econômico e simbólico.\n\nE precisa ser construído com método — não deixado à sorte da percepção espontânea.\n\nEsse é um mercado com características específicas que tornam a reputação ainda mais estratégica do que em outros setores:\n\nA jornada de confiança do paciente é longa — ele pesquisa muito antes de consultar.\nO tema carrega estigma histórico — e erros de comunicação têm custo reputacional alto.\nA regulação é restritiva — o que pode ser dito tem limites legais e éticos.\nA competição está aumentando — e a disputa por autoridade percebida está começando.\n\nNesse contexto, médicos que constroem reputação com critério estão criando um ativo que não é facilmente replicável:\n\nConfiança institucional que precede a consulta.\nReferência setorial que se sustenta além da presença digital.\nPercepção de valor que reduz atrito na conversão.\n\nConstruir isso exige uma lógica diferente da lógica de marketing genérico.\nExige integrar posicionamento, comunicação e captação como sistema — não como iniciativas separadas."}
+    ],
+    legenda:"Reputação no mercado de cannabis medicinal não se gere sozinha.\nSe constrói com método.\nE quando está construída, trabalha por você — mesmo quando você não está publicando.",
+    hashtags:"#cannabismedicinal #reputacaoclinica #autoridademedica #estratégiadigital #socialcann #posicionamento #medicodigital #crescimentoprofissional"
+  },
+  {
+    id:14, semana:1, dia:"08", canal:"instagram", linha:"Estrutura de Crescimento",
+    titulo:"Ecossistema versus presença digital",
+    formato:"Carrossel — 6 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"Presença digital e ecossistema estratégico.\n\nNão são sinônimos. E confundi-los é caro."},
+      {n:"Card 2", t:"Presença digital é o que aparece: perfis, posts, seguidores, alcance.\n\nEcossistema estratégico é o que funciona: posicionamento, captação, reputação, jornada do paciente, monetização.\n\nUm médico pode ter presença digital robusta e ecossistema fraco.\nEssa combinação é mais comum do que parece — e é ela que explica a frustração de quem publica muito e cresce pouco."},
+      {n:"Card 3", t:"Quando a energia vai toda para presença — mais posts, mais stories, mais reels — e o ecossistema não está estruturado, o resultado é previsível:\n\nAlcance cresce. Conversão não acompanha.\nSeguidores aumentam. Pacientes qualificados não chegam mais rápido.\nVisibilidade melhora. Reputação não necessariamente."},
+      {n:"Card 4", t:"Construir ecossistema significa tomar decisões em camadas:\n\nPrimeiro: o que o médico quer construir — qual prática, qual paciente, qual reputação.\nDepois: como o posicionamento sustenta essa visão.\nEm seguida: como a comunicação serve esse posicionamento.\nPor último: como a captação e a monetização fecham o sistema."},
+      {n:"Card 5", t:"O trabalho estratégico começa pela leitura desse sistema como um todo — não pela escolha de plataforma ou formato de conteúdo.\n\nEssa leitura é o que diferencia estruturação estratégica de gestão de redes sociais.\nNão é hierarquia de valor. São funções diferentes. E confundir uma com a outra leva ao investimento no lugar errado."},
+      {n:"Card 6 — CTA", t:"Se você tem presença mas sente que o ecossistema não está funcionando — essa percepção é o diagnóstico inicial.\n\nO próximo passo é entender o que está desorganizado.\n\nO link está na bio."},
+    ],
+    legenda:"Presença digital é o que aparece.\nEcossistema estratégico é o que funciona.\n\nA diferença entre os dois é o que determina se o esforço vira resultado — ou apenas atividade.",
+    hashtags:"#cannabismedicinal #ecossistemaestratégico #presencadigital #posicionamento #socialcann #estratégiadigital #medicodigital #crescimentoprofissional"
+  },
+  {
+    id:15, semana:5, dia:"06 junho", canal:"instagram", linha:"Comunicação Estratégica",
+    titulo:"O que a Social Cann faz — e o que não faz",
+    formato:"Carrossel — 6 cards",
+    cards:[
+      {n:"Card 1 — Capa", t:"O que a Social Cann faz.\nE o que ela não faz.\n\nEssa distinção importa — porque ela define para quem esse trabalho faz sentido."},
+      {n:"Card 2", t:"A Social Cann não é uma agência de marketing médico.\nNão gerencia redes sociais.\nNão produz post.\nNão entrega calendário de conteúdo mensal.\n\nEssa é uma distinção necessária — não para se diferenciar por posicionamento estético, mas porque o que fazemos é fundamentalmente diferente do que essas empresas fazem."},
+      {n:"Card 3", t:"A Social Cann é uma estrutura de estratégia e gestão de crescimento para médicos de cannabis medicinal.\n\nTrabalha no nível do modelo — não da execução.\n\nIsso significa que a entrega começa antes do conteúdo. Começa no diagnóstico do negócio médico — no que está funcionando, no que está freando e no que precisa ser reorganizado antes de qualquer ação visível."},
+      {n:"Card 4", t:"O que fazemos, concretamente:\n\nDiagnóstico estratégico do negócio médico.\nEstruturação de posicionamento.\nArquitetura de crescimento sustentável.\nOrganização da captação qualificada.\nDesenvolvimento de ativos de autoridade e receita.\nDireção estratégica de projetos de crescimento."},
+      {n:"Card 5", t:"Para quem esse trabalho faz sentido:\n\nMédicos de cannabis medicinal que já têm prática estabelecida e querem crescer com mais método.\nProfissionais que identificam que o problema não é de execução — é de estrutura.\nMédicos que querem construir autoridade sustentável, não apenas visibilidade temporária.\nProfissionais que entendem que crescimento com critério é mais valioso do que crescimento por volume."},
+      {n:"Card 6 — CTA", t:"Se você reconhece esse perfil no que você está construindo — vale a pena conversar.\n\nO primeiro passo é o Diagnóstico Estratégico.\n\nO link está na bio."},
+    ],
+    legenda:"A Social Cann existe para organizar crescimento.\nNão para gerar atividade.\n\nEssa diferença define tudo: o que entregamos, para quem entregamos e como medimos resultado.",
+    hashtags:"#cannabismedicinal #socialcann #estratégiadigital #diagnósticoestrategico #posicionamentomedico #crescimentoprofissional #autoridademedica #medicodigital"
+  },
+];
+
+const STATUS_KEY = 'sc_cal_status_v1';
+let statusMap = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
+let activeFilter = 'todos';
+let searchQuery = '';
+
+function saveStatus() { localStorage.setItem(STATUS_KEY, JSON.stringify(statusMap)); updateHeader(); }
+function getStatus(id) { return statusMap[id] || 'pendente'; }
+function cycleStatus(id, btn) {
+  const s = getStatus(id);
+  const next = s === 'pendente' ? 'producao' : s === 'producao' ? 'concluido' : 'pendente';
+  statusMap[id] = next;
+  saveStatus();
+  renderStatusBtn(btn, next);
+  renderCards();
+}
+
+function renderStatusBtn(btn, status) {
+  const labels = { pendente: '○ A fazer', producao: '◑ Em produção', concluido: '● Concluído' };
+  btn.textContent = labels[status];
+  btn.className = 'status-btn' + (status === 'concluido' ? ' done' : status === 'producao' ? ' prod' : '');
+}
+
+function updateHeader() {
+  const done = Object.values(statusMap).filter(v => v === 'concluido').length;
+  document.getElementById('hDone').textContent = done;
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const arrow = document.getElementById('arrow-' + id);
+  const open = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+}
+
+function filter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function search() {
+  searchQuery = document.getElementById('searchBox').value.toLowerCase();
+  renderCards();
+}
+
+function lineTagClass(linha) {
+  const map = {
+    'Estrutura de Crescimento': 'l1', 'Diagnóstico Estratégico': 'l2',
+    'Leitura de Mercado': 'l3', 'Reputação e Autoridade': 'l4',
+    'Captação Qualificada': 'l4', 'Posicionamento Estratégico': 'l3',
+    'Comunicação Estratégica': 'l2', 'Reputação': 'l4'
+  };
+  return 'tag-' + (map[linha] || 'l1');
+}
+
+function buildCard(p) {
+  const status = getStatus(p.id);
+  const statusLabel = { pendente: '○ A fazer', producao: '◑ Em produção', concluido: '● Concluído' }[status];
+  const statusClass = { pendente: '', producao: ' prod', concluido: ' done' }[status];
+  const canal = p.canal === 'instagram' ? 'Instagram' : 'LinkedIn';
+  const canalTag = p.canal === 'instagram' ? 'tag-ig' : 'tag-li';
+
+  const slidesHTML = p.cards.map((c, i) => `
+    <div class="post-slide">
+      <div class="slide-num">${c.n}</div>
+      <div class="slide-text">${c.t.replace(/\n/g,'<br>')}</div>
+    </div>`).join('');
+
+  const allCards = p.cards.map(c => c.n + '\n' + c.t).join('\n\n---\n\n');
+
+  return `<div class="post-card" id="card-${p.id}" data-canal="${p.canal}" data-status="${status}">
+    <div class="card-header" onclick="toggleCard(${p.id})">
+      <div class="card-date">${p.dia}</div>
+      <div class="card-meta">
+        <div class="card-title">${p.titulo}</div>
+        <div class="card-tags">
+          <span class="tag ${canalTag}">${canal}</span>
+          <span class="tag tag-l1" style="opacity:.6;font-size:9px">${p.formato}</span>
+          <span class="tag ${lineTagClass(p.linha)}">${p.linha}</span>
+        </div>
+      </div>
+      <div class="card-toggle" id="arrow-${p.id}">▾</div>
+    </div>
+    <div class="card-body" id="body-${p.id}">
+      <div class="card-section">
+        <div class="section-label">Cards / Conteúdo</div>
+        <div class="cards-grid">${slidesHTML}</div>
+        <div class="copy-row">
+          <button class="copy-btn" onclick="copyText(${JSON.stringify(allCards)}, this)">Copiar todos os cards</button>
+        </div>
+      </div>
+      <div class="card-section">
+        <div class="section-label">Legenda Instagram / LinkedIn</div>
+        <div class="legenda-box">
+          <div class="legenda-text">${p.legenda.replace(/\n/g,'<br>')}</div>
+          <div class="hashtags">${p.hashtags}</div>
+        </div>
+        <div class="copy-row">
+          <button class="copy-btn" onclick="copyText(${JSON.stringify(p.legenda + '\n\n' + p.hashtags)}, this)">Copiar legenda + hashtags</button>
+          <button class="copy-btn" onclick="copyText(${JSON.stringify(allCards + '\n\n---\nLEGENDA:\n' + p.legenda + '\n\n' + p.hashtags)}, this)">Copiar tudo</button>
+        </div>
+      </div>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Status:</span>
+      <button class="status-btn${statusClass}" onclick="cycleStatus(${p.id}, this)">${statusLabel}</button>
+    </div>
+  </div>`;
+}
+
+function renderCards() {
+  const main = document.getElementById('main');
+  let filtered = posts.filter(p => {
+    const s = getStatus(p.id);
+    if (activeFilter === 'instagram' && p.canal !== 'instagram') return false;
+    if (activeFilter === 'linkedin' && p.canal !== 'linkedin') return false;
+    if (activeFilter === 'pendente' && s !== 'pendente') return false;
+    if (activeFilter === 'producao' && s !== 'producao') return false;
+    if (activeFilter === 'concluido' && s !== 'concluido') return false;
+    if (searchQuery && !p.titulo.toLowerCase().includes(searchQuery) && !p.linha.toLowerCase().includes(searchQuery)) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    main.innerHTML = '<div class="no-results">Nenhum post encontrado para esse filtro.</div>';
+    return;
+  }
+
+  const bySemana = {};
+  filtered.forEach(p => {
+    if (!bySemana[p.semana]) bySemana[p.semana] = [];
+    bySemana[p.semana].push(p);
+  });
+
+  const semanaInfo = {
+    1: { dates: '06 – 10 mai', theme: 'Ecossistema e presença digital' },
+    2: { dates: '13 – 17 mai', theme: 'Diagnóstico e mercado' },
+    3: { dates: '20 – 24 mai', theme: 'Captação e comunicação' },
+    4: { dates: '27 – 31 mai', theme: 'Crescimento sustentável' },
+    5: { dates: 'Fim de maio / Transição', theme: 'Identidade da Social Cann' },
+  };
+
+  let html = '';
+  Object.keys(bySemana).sort().forEach(sem => {
+    const info = semanaInfo[sem] || {};
+    html += `<div class="week-head">
+      <div class="week-num">S${sem}</div>
+      <div>
+        <div class="week-theme">${info.theme || ''}</div>
+        <div class="week-dates">${info.dates || ''}</div>
+      </div>
+    </div>`;
+    bySemana[sem].forEach(p => { html += buildCard(p); });
+  });
+
+  main.innerHTML = html;
+}
+
+renderCards();
+updateHeader();
+</script>
+</body>
+</html>

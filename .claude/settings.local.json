@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__scheduled-tasks__create_scheduled_task",
+      "mcp__scheduled-tasks__update_scheduled_task",
+      "Bash(powershell -Command \"@{taskId='cannabis-market-updates'; cronExpression='0 6 * * 3'} | ConvertTo-Json\")",
+      "Bash(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\User\\\\Desktop\\\\Social Cann\\\\Katharine Louise\\\\Posts\" -Force)",
+      "Bash(Out-Null)",
+      "WebSearch",
+      "mcp__scheduled-tasks__list_scheduled_tasks",
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(gh --version)",
+      "Bash(git --version)"
+    ]
+  }
+}

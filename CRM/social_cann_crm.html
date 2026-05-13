@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Cann — CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #F5F0E8;
+  --cream-dark: #EDE6D8;
+  --cream-border: #D8D0C0;
+  --green: #1C6B4A;
+  --green-light: #E8F3EE;
+  --green-mid: #2D8A60;
+  --amber: #B5701A;
+  --amber-light: #FDF3E3;
+  --coral: #C0442A;
+  --coral-light: #FCEEE9;
+  --slate: #3A3530;
+  --slate-mid: #6B6359;
+  --slate-light: #9C9389;
+  --white: #FDFBF7;
+  --shadow: 0 1px 3px rgba(58,53,48,0.08), 0 4px 16px rgba(58,53,48,0.06);
+  --shadow-lg: 0 8px 32px rgba(58,53,48,0.14);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--slate);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* HEADER */
+.header {
+  background: var(--slate);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+}
+.logo span { color: #7EC8A0; }
+.header-meta { font-size: 12px; color: var(--slate-light); }
+
+/* LAYOUT */
+.main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 24px; }
+.stat {
+  background: var(--white);
+  border: 0.5px solid var(--cream-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.stat-n { font-size: 24px; font-weight: 600; color: var(--slate); line-height: 1; }
+.stat-n.green { color: var(--green); }
+.stat-n.amber { color: var(--amber); }
+.stat-n.coral { color: var(--coral); }
+.stat-l { font-size: 11px; color: var(--slate-light); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+
+/* CONTROLS */
+.toolbar {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;
+}
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: .4; }
+.search-input {
+  width: 100%; height: 36px; padding: 0 12px 0 34px;
+  border: 0.5px solid var(--cream-border); border-radius: 8px;
+  background: var(--white); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--slate); outline: none;
+}
+.search-input:focus { border-color: var(--green-mid); }
+select.ctrl {
+  height: 36px; padding: 0 10px;
+  border: 0.5px solid var(--cream-border); border-radius: 8px;
+  background: var(--white); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--slate); outline: none; cursor: pointer;
+}
+.tab-group { display: flex; border: 0.5px solid var(--cream-border); border-radius: 8px; overflow: hidden; }
+.tab-btn {
+  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 500;
+  border: none; background: var(--white); color: var(--slate-mid); cursor: pointer;
+  transition: all .15s;
+}
+.tab-btn.active { background: var(--slate); color: var(--cream); }
+.btn-new {
+  height: 36px; padding: 0 18px; border-radius: 8px;
+  background: var(--green); color: white; border: none;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.btn-new:hover { background: var(--green-mid); }
+
+/* KANBAN */
+.kanban { display: grid; grid-template-columns: repeat(7, minmax(160px, 1fr)); gap: 10px; overflow-x: auto; padding-bottom: 8px; }
+.col {
+  background: var(--cream-dark);
+  border: 0.5px solid var(--cream-border);
+  border-radius: 10px; padding: 10px; min-width: 160px;
+}
+.col-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; padding: 0 2px;
+}
+.col-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--slate-mid); }
+.col-badge {
+  font-size: 10px; font-weight: 600; padding: 1px 7px;
+  border-radius: 10px; background: var(--cream-border); color: var(--slate-mid);
+}
+.kcard {
+  background: var(--white); border: 0.5px solid var(--cream-border);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+  cursor: pointer; transition: all .15s; position: relative;
+}
+.kcard:hover { border-color: var(--green-mid); box-shadow: var(--shadow); transform: translateY(-1px); }
+.kcard-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.kcard-spec { font-size: 11px; color: var(--slate-light); margin-bottom: 6px; }
+.kcard-loc { font-size: 10px; color: var(--slate-light); margin-bottom: 6px; }
+.kcard-foot { display: flex; align-items: center; justify-content: space-between; }
+.temp-pill {
+  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+}
+.temp-q { background: var(--green-light); color: var(--green); }
+.temp-m { background: var(--amber-light); color: var(--amber); }
+.temp-f { background: var(--cream-border); color: var(--slate-mid); }
+.kcard-date { font-size: 10px; color: var(--slate-light); }
+.kcard-evid { font-size: 10px; color: var(--green); margin-top: 4px; }
+.empty-col { text-align: center; padding: 20px 0; font-size: 11px; color: var(--slate-light); }
+
+/* LIST */
+.list-wrap { display: none; }
+.list-wrap.show { display: block; }
+.kanban-wrap.hide { display: none; }
+table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 10px; overflow: hidden; border: 0.5px solid var(--cream-border); }
+thead { background: var(--cream-dark); }
+th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--slate-mid); padding: 10px 14px; text-align: left; white-space: nowrap; border-bottom: 0.5px solid var(--cream-border); }
+td { padding: 10px 14px; border-bottom: 0.5px solid var(--cream-border); font-size: 13px; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tbody tr { cursor: pointer; transition: background .1s; }
+tbody tr:hover td { background: var(--cream-dark); }
+.etapa-badge {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 10px; white-space: nowrap;
+}
+.link-cell a { color: var(--green); font-size: 11px; text-decoration: none; }
+.link-cell a:hover { text-decoration: underline; }
+
+/* MODAL OVERLAY */
+.overlay {
+  position: fixed; inset: 0; background: rgba(58,53,48,.5);
+  z-index: 200; display: none; align-items: flex-start;
+  justify-content: center; padding: 32px 16px; overflow-y: auto;
+  backdrop-filter: blur(2px);
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: 14px;
+  border: 0.5px solid var(--cream-border);
+  box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 620px;
+  padding: 28px; position: relative;
+  animation: slideUp .2s ease;
+}
+@keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.modal-close {
+  position: absolute; top: 16px; right: 18px;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 0.5px solid var(--cream-border); background: var(--cream-dark);
+  color: var(--slate-mid); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.modal-close:hover { background: var(--cream-border); }
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px; color: var(--slate); margin-bottom: 20px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.form-grid.full { grid-template-columns: 1fr; }
+.form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--slate-mid); }
+.field input, .field select, .field textarea {
+  height: 36px; padding: 0 12px;
+  border: 0.5px solid var(--cream-border); border-radius: 8px;
+  background: var(--cream); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--slate); outline: none;
+  transition: border-color .15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--green-mid); background: var(--white); }
+.field textarea { height: 72px; padding: 10px 12px; resize: none; }
+.section-divider {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--slate-light);
+  margin: 18px 0 12px; padding-bottom: 6px;
+  border-bottom: 0.5px solid var(--cream-border);
+}
+.hist-list { max-height: 140px; overflow-y: auto; margin-bottom: 10px; }
+.hist-item {
+  display: flex; gap: 8px; padding: 6px 0;
+  border-bottom: 0.5px solid var(--cream-border); font-size: 12px;
+}
+.hist-item:last-child { border-bottom: none; }
+.hist-date { color: var(--slate-light); font-size: 11px; white-space: nowrap; min-width: 80px; }
+.hist-txt { color: var(--slate-mid); }
+.add-hist-row { display: flex; gap: 8px; }
+.add-hist-row input {
+  flex: 1; height: 32px; padding: 0 10px;
+  border: 0.5px solid var(--cream-border); border-radius: 7px;
+  background: var(--cream); font-family: 'DM Sans', sans-serif;
+  font-size: 12px; color: var(--slate); outline: none;
+}
+.add-hist-row input:focus { border-color: var(--green-mid); }
+.btn-hist {
+  height: 32px; padding: 0 12px; border-radius: 7px;
+  border: 0.5px solid var(--cream-border); background: var(--cream-dark);
+  font-size: 12px; color: var(--slate-mid); cursor: pointer; white-space: nowrap;
+}
+.btn-hist:hover { background: var(--cream-border); }
+.modal-actions { display: flex; align-items: center; gap: 8px; margin-top: 20px; }
+.btn-del { height: 36px; padding: 0 14px; border-radius: 8px; border: 0.5px solid #FECBC0; background: var(--coral-light); color: var(--coral); font-size: 13px; cursor: pointer; margin-right: auto; display: none; }
+.btn-cancel { height: 36px; padding: 0 16px; border-radius: 8px; border: 0.5px solid var(--cream-border); background: var(--cream-dark); color: var(--slate-mid); font-size: 13px; cursor: pointer; }
+.btn-save { height: 36px; padding: 0 20px; border-radius: 8px; background: var(--green); color: white; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+.btn-save:hover { background: var(--green-mid); }
+.next-step-box {
+  background: var(--green-light); border: 0.5px solid #B2DFC8;
+  border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 12px; color: var(--green);
+}
+.next-step-box strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
+.no-results { text-align: center; padding: 48px; color: var(--slate-light); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Social<span>Cann</span> <span style="font-family:'DM Sans';font-size:13px;color:#7EC8A0;font-weight:300;margin-left:8px">CRM</span></div>
+  <div class="header-meta" id="headerMeta"></div>
+</div>
+
+<div class="main">
+  <div class="stats" id="statsBar"></div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="search" placeholder="Buscar nome, especialidade, cidade..." oninput="render()">
+    </div>
+    <select class="ctrl" id="filtTemp" onchange="render()">
+      <option value="">Toda temperatura</option>
+      <option value="Quente">Quente</option>
+      <option value="Morno">Morno</option>
+      <option value="Frio">Frio</option>
+    </select>
+    <select class="ctrl" id="filtPais" onchange="render()">
+      <option value="">Todo país</option>
+      <option value="Brasil">Brasil</option>
+      <option value="Portugal">Portugal</option>
+      <option value="Argentina">Argentina</option>
+    </select>
+    <select class="ctrl" id="filtEtapa" onchange="render()">
+      <option value="">Todo estágio</option>
+      <option value="Identificado">Identificado</option>
+      <option value="Abordado">Abordado</option>
+      <option value="Em conversa">Em conversa</option>
+      <option value="Call agendada">Call agendada</option>
+      <option value="Proposta enviada">Proposta enviada</option>
+      <option value="Fechado">Fechado</option>
+      <option value="Frio/Pausado">Frio/Pausado</option>
+    </select>
+    <div class="tab-group">
+      <button class="tab-btn active" id="tabKanban" onclick="switchView('kanban')">Kanban</button>
+      <button class="tab-btn" id="tabLista" onclick="switchView('lista')">Lista</button>
+    </div>
+    <button class="btn-new" onclick="openNew()">+ Novo prospect</button>
+  </div>
+
+  <div class="kanban-wrap" id="kanbanWrap"></div>
+  <div class="list-wrap" id="listWrap"></div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title" id="modalTitle">Novo prospect</div>
+
+    <div class="form-grid">
+      <div class="field"><label>Nome completo</label><input id="fNome" placeholder="Dr. Nome Sobrenome"></div>
+      <div class="field"><label>Especialidade</label><input id="fEspec" placeholder="Médico cannabis / Psiquiatria"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>País</label>
+        <select id="fPais">
+          <option>Brasil</option><option>Portugal</option><option>Argentina</option><option>EUA</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="field"><label>UF</label><input id="fUF" placeholder="SP, RJ, MG..."></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Região</label><input id="fRegiao" placeholder="Sudeste, Sul..."></div>
+      <div class="field"><label>Cidade / Atendimento</label><input id="fCidade" placeholder="São Paulo, online..."></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Instagram</label><input id="fInsta" placeholder="@perfil"></div>
+      <div class="field"><label>LinkedIn</label><input id="fLinkedin" placeholder="linkedin.com/in/..."></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>WhatsApp / E-mail</label><input id="fContato" placeholder="(xx) xxxxx / email@"></div>
+      <div class="field"><label>Origem do contato</label>
+        <select id="fOrigem">
+          <option>Instagram</option><option>LinkedIn</option><option>Indicação</option><option>Evento</option><option>Outro</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Temperatura</label>
+        <select id="fTemp">
+          <option value="Morno">Morno</option>
+          <option value="Quente">Quente</option>
+          <option value="Frio">Frio</option>
+        </select>
+      </div>
+      <div class="field"><label>Estágio</label>
+        <select id="fEtapa">
+          <option>Identificado</option><option>Abordado</option><option>Em conversa</option>
+          <option>Call agendada</option><option>Proposta enviada</option><option>Fechado</option><option>Frio/Pausado</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid full">
+      <div class="field"><label>Evidência 1 — Cannabis</label><input id="fEvid1" placeholder="Prescreve cannabis há X anos, publicou sobre..."></div>
+    </div>
+    <div class="form-grid full">
+      <div class="field"><label>Evidência 2 — Autoridade</label><input id="fEvid2" placeholder="Seguidores, livro, eventos, mídia..."></div>
+    </div>
+    <div class="form-grid full">
+      <div class="field"><label>Notas / Foco estratégico</label><textarea id="fNotas" placeholder="Contexto relevante sobre o perfil, dores percebidas, oportunidade..."></textarea></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Link 1</label><input id="fLink1" placeholder="https://"></div>
+      <div class="field"><label>Link 2</label><input id="fLink2" placeholder="https://"></div>
+    </div>
+
+    <div id="nextStepBox" class="next-step-box" style="display:none">
+      <strong>Próximo passo recomendado</strong>
+      <span id="nextStepTxt"></span>
+    </div>
+
+    <div class="section-divider">Histórico de contatos</div>
+    <div class="hist-list" id="histList"></div>
+    <div class="add-hist-row">
+      <input type="text" id="histInput" placeholder="Registrar ação, interação ou observação...">
+      <button class="btn-hist" onclick="addHist()">+ Registrar</button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-del" id="btnDel" onclick="deletePros()">Remover</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="savePros()">Salvar prospect</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ETAPAS = ['Identificado','Abordado','Em conversa','Call agendada','Proposta enviada','Fechado','Frio/Pausado'];
+
+const ETAPA_STYLE = {
+  'Identificado':    {bg:'#E8EEF5',color:'#2A4A6B'},
+  'Abordado':        {bg:'#E8F3EE',color:'#1C6B4A'},
+  'Em conversa':     {bg:'#FDF3E3',color:'#B5701A'},
+  'Call agendada':   {bg:'#FDF0E3',color:'#C06010'},
+  'Proposta enviada':{bg:'#FCEEE9',color:'#C0442A'},
+  'Fechado':         {bg:'#D4EDDA',color:'#155724'},
+  'Frio/Pausado':    {bg:'#EEECE8',color:'#6B6359'},
+};
+
+const NEXT_STEPS = {
+  'Identificado':    'Seguir + interagir com 2–3 posts antes de abordar.',
+  'Abordado':        'Aguardar resposta. Se silêncio em 3 dias, enviar conteúdo de valor.',
+  'Em conversa':     'Nutrir o interesse. Convidar para call diagnóstica quando houver abertura.',
+  'Call agendada':   'Preparar briefing do prospect antes da call. Não dar soluções — mapear.',
+  'Proposta enviada':'Follow-up em 48h se sem resposta. Perguntar se há dúvidas.',
+  'Fechado':         'Enviar boas-vindas oficial + formulário de onboarding.',
+  'Frio/Pausado':    'Incluir em nutrição passiva pelo conteúdo. Rever em 30 dias.',
+};
+
+function today(d=0){ const t=new Date(); t.setDate(t.getDate()+d); return t.toLocaleDateString('pt-BR'); }
+
+let data = JSON.parse(localStorage.getItem('sc_crm_v2')||'[]');
+let editId = null;
+let viewMode = 'kanban';
+
+if(!data.length){
+  data = [
+    {id:1,nome:'Dr. Rafael Mendes',espec:'Neurologia / cannabis',pais:'Brasil',uf:'SP',regiao:'Sudeste',cidade:'São Paulo',insta:'@drrafaelmendes',linkedin:'',contato:'',origem:'Instagram',temp:'Quente',etapa:'Identificado',evid1:'Prescreve cannabis há 4 anos, posts frequentes sobre casos clínicos',evid2:'12k seguidores, palestrante em congressos',notas:'Perfil forte, audiência engajada. Nunca monetizou o conhecimento.',link1:'',link2:'',hist:[{txt:'Prospect adicionado',dt:today()}]},
+    {id:2,nome:'Dra. Camila Torres',espec:'Psiquiatria / cannabis',pais:'Brasil',uf:'RJ',regiao:'Sudeste',cidade:'Rio de Janeiro',insta:'@dracamilatorres',linkedin:'',contato:'',origem:'Instagram',temp:'Quente',etapa:'Abordado',evid1:'Publicou sobre dificuldade de monetizar audiência',evid2:'8k seguidores, autora de conteúdo técnico denso',notas:'Verbaliza exatamente a dor que a Social Cann resolve.',link1:'',link2:'',hist:[{txt:'Curtiu 3 posts da Social Cann',dt:today(-7)},{txt:'DM enviada — observação sobre conteúdo dela',dt:today(-3)}]},
+    {id:3,nome:'Dr. Bruno Alves',espec:'Clínico geral / cannabis',pais:'Brasil',uf:'MG',regiao:'Sudeste',cidade:'Belo Horizonte',insta:'@drbrunalves',linkedin:'linkedin.com/in/brunoalves',contato:'',origem:'LinkedIn',temp:'Morno',etapa:'Em conversa',evid1:'Prescreve cannabis em clínica própria',evid2:'LinkedIn ativo, artigos sobre dor crônica',notas:'Mencionou dificuldade de converter audiência em pacientes.',link1:'',link2:'',hist:[{txt:'Conectou no LinkedIn',dt:today(-10)},{txt:'DM enviada',dt:today(-8)},{txt:'Respondeu com interesse — quer entender a metodologia',dt:today(-4)}]},
+    {id:4,nome:'Dra. Fernanda Lima',espec:'Pediatria / cannabis',pais:'Brasil',uf:'SP',regiao:'Sudeste',cidade:'Campinas',insta:'@drnandinha',linkedin:'',contato:'(19) 99999-0000',origem:'Indicação',temp:'Quente',etapa:'Call agendada',evid1:'Clínica com 3 médicos prescritores',evid2:'Indicada por colega — referência local no setor',notas:'Potencial de projeto maior — clínica com equipe. Decisora.',link1:'',link2:'',hist:[{txt:'Indicação recebida pela Dra. Camila Torres',dt:today(-6)},{txt:'Primeiro contato por WhatsApp',dt:today(-4)},{txt:'Call diagnóstica agendada — terça 14h',dt:today(-1)}]},
+    {id:5,nome:'Dr. Mateus Costa',espec:'Ortopedia / dor crônica',pais:'Brasil',uf:'RS',regiao:'Sul',cidade:'Porto Alegre',insta:'@drmateus.ortho',linkedin:'',contato:'',origem:'Instagram',temp:'Frio',etapa:'Frio/Pausado',evid1:'Prescreve cannabis para dor crônica pós-operatória',evid2:'5k seguidores',notas:'Seguiu mas não respondeu DMs. Incluir em nutrição passiva.',link1:'',link2:'',hist:[{txt:'DM enviada — sem resposta',dt:today(-14)},{txt:'Segunda DM — sem resposta',dt:today(-7)},{txt:'Movido para frio',dt:today(0)}]},
+  ];
+  save();
+}
+
+function save(){ localStorage.setItem('sc_crm_v2', JSON.stringify(data)); }
+
+function filtered(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const t = document.getElementById('filtTemp').value;
+  const p = document.getElementById('filtPais').value;
+  const e = document.getElementById('filtEtapa').value;
+  return data.filter(r => {
+    if(q && !r.nome.toLowerCase().includes(q) && !r.espec.toLowerCase().includes(q) && !(r.cidade||'').toLowerCase().includes(q)) return false;
+    if(t && r.temp !== t) return false;
+    if(p && r.pais !== p) return false;
+    if(e && r.etapa !== e) return false;
+    return true;
+  });
+}
+
+function renderStats(){
+  const bar = document.getElementById('statsBar');
+  const total = data.length;
+  const q = data.filter(r=>r.temp==='Quente').length;
+  const calls = data.filter(r=>r.etapa==='Call agendada').length;
+  const prop = data.filter(r=>r.etapa==='Proposta enviada').length;
+  const fech = data.filter(r=>r.etapa==='Fechado').length;
+  const frio = data.filter(r=>r.etapa==='Frio/Pausado').length;
+  bar.innerHTML = `
+    <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Total</div></div>
+    <div class="stat"><div class="stat-n green">${q}</div><div class="stat-l">Quentes</div></div>
+    <div class="stat"><div class="stat-n amber">${calls}</div><div class="stat-l">Call agendada</div></div>
+    <div class="stat"><div class="stat-n amber">${prop}</div><div class="stat-l">Proposta</div></div>
+    <div class="stat"><div class="stat-n green">${fech}</div><div class="stat-l">Fechados</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--slate-light)">${frio}</div><div class="stat-l">Frios</div></div>
+  `;
+  document.getElementById('headerMeta').textContent = `${total} prospects · atualizado ${today()}`;
+}
+
+function renderKanban(list){
+  const wrap = document.getElementById('kanbanWrap');
+  wrap.innerHTML = '<div class="kanban">' + ETAPAS.map(e => {
+    const cards = list.filter(r=>r.etapa===e);
+    const tempClass = {Quente:'temp-q',Morno:'temp-m',Frio:'temp-f'};
+    return `<div class="col">
+      <div class="col-head">
+        <span class="col-name">${e}</span>
+        <span class="col-badge">${cards.length}</span>
+      </div>
+      ${cards.length ? cards.map(r=>`
+        <div class="kcard" onclick="openEdit(${r.id})">
+          <div class="kcard-name">${r.nome}</div>
+          <div class="kcard-spec">${r.espec}</div>
+          <div class="kcard-loc">${[r.cidade,r.uf,r.pais].filter(Boolean).join(' · ')}</div>
+          <div class="kcard-foot">
+            <span class="temp-pill ${tempClass[r.temp]||'temp-f'}">${r.temp}</span>
+            <span class="kcard-date">${r.hist&&r.hist.length?r.hist[r.hist.length-1].dt:''}</span>
+          </div>
+          ${r.evid1?`<div class="kcard-evid">✓ ${r.evid1.substring(0,45)}${r.evid1.length>45?'…':''}</div>`:''}
+        </div>`).join('') : '<div class="empty-col">—</div>'}
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function renderList(list){
+  const wrap = document.getElementById('listWrap');
+  if(!list.length){ wrap.innerHTML='<div class="no-results">Nenhum prospect encontrado.</div>'; return; }
+  const tempClass = {Quente:'temp-q',Morno:'temp-m',Frio:'temp-f'};
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th>Nome</th><th>Especialidade</th><th>País</th><th>UF</th><th>Cidade</th>
+      <th>Temperatura</th><th>Estágio</th><th>Origem</th><th>Evidência cannabis</th><th>Links</th><th>Último contato</th>
+    </tr></thead>
+    <tbody>${list.map(r=>{
+      const es = ETAPA_STYLE[r.etapa]||{bg:'#eee',color:'#333'};
+      const last = r.hist&&r.hist.length ? r.hist[r.hist.length-1].dt : '—';
+      const links = [r.link1,r.link2,r.insta?`https://instagram.com/${r.insta.replace('@','')}`:'',r.linkedin].filter(Boolean);
+      return `<tr onclick="openEdit(${r.id})">
+        <td style="font-weight:500">${r.nome}</td>
+        <td style="color:var(--slate-mid)">${r.espec}</td>
+        <td style="color:var(--slate-light)">${r.pais||'—'}</td>
+        <td style="color:var(--slate-light)">${r.uf||'—'}</td>
+        <td style="color:var(--slate-light)">${r.cidade||'—'}</td>
+        <td><span class="temp-pill ${tempClass[r.temp]||'temp-f'}">${r.temp}</span></td>
+        <td><span class="etapa-badge" style="background:${es.bg};color:${es.color}">${r.etapa}</span></td>
+        <td style="color:var(--slate-light)">${r.origem||'—'}</td>
+        <td style="color:var(--slate-mid);font-size:11px;max-width:160px">${r.evid1||'—'}</td>
+        <td class="link-cell">${links.slice(0,2).map(l=>`<a href="${l}" target="_blank" onclick="event.stopPropagation()">↗ link</a>`).join(' ')}</td>
+        <td style="color:var(--slate-light);font-size:11px">${last}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function render(){
+  renderStats();
+  const list = filtered();
+  if(viewMode==='kanban'){ renderKanban(list); }
+  else { renderList(list); }
+}
+
+function switchView(mode){
+  viewMode = mode;
+  document.getElementById('kanbanWrap').classList.toggle('hide', mode!=='kanban');
+  document.getElementById('listWrap').classList.toggle('show', mode==='lista');
+  document.getElementById('tabKanban').classList.toggle('active', mode==='kanban');
+  document.getElementById('tabLista').classList.toggle('active', mode==='lista');
+  render();
+}
+
+function openNew(){
+  editId = null;
+  document.getElementById('modalTitle').textContent = 'Novo prospect';
+  document.getElementById('btnDel').style.display = 'none';
+  document.getElementById('nextStepBox').style.display = 'none';
+  ['fNome','fEspec','fUF','fRegiao','fCidade','fContato','fEvid1','fEvid2','fNotas','fLink1','fLink2','fInsta','fLinkedin'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fPais').value = 'Brasil';
+  document.getElementById('fTemp').value = 'Morno';
+  document.getElementById('fEtapa').value = 'Identificado';
+  document.getElementById('fOrigem').value = 'Instagram';
+  document.getElementById('histList').innerHTML = '<div style="font-size:11px;color:var(--slate-light);padding:4px 0">Nenhum registro ainda.</div>';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function openEdit(id){
+  const r = data.find(x=>x.id===id);
+  if(!r) return;
+  editId = id;
+  document.getElementById('modalTitle').textContent = r.nome || 'Editar prospect';
+  document.getElementById('btnDel').style.display = 'block';
+  document.getElementById('fNome').value = r.nome||'';
+  document.getElementById('fEspec').value = r.espec||'';
+  document.getElementById('fPais').value = r.pais||'Brasil';
+  document.getElementById('fUF').value = r.uf||'';
+  document.getElementById('fRegiao').value = r.regiao||'';
+  document.getElementById('fCidade').value = r.cidade||'';
+  document.getElementById('fInsta').value = r.insta||'';
+  document.getElementById('fLinkedin').value = r.linkedin||'';
+  document.getElementById('fContato').value = r.contato||'';
+  document.getElementById('fOrigem').value = r.origem||'Instagram';
+  document.getElementById('fTemp').value = r.temp||'Morno';
+  document.getElementById('fEtapa').value = r.etapa||'Identificado';
+  document.getElementById('fEvid1').value = r.evid1||'';
+  document.getElementById('fEvid2').value = r.evid2||'';
+  document.getElementById('fNotas').value = r.notas||'';
+  document.getElementById('fLink1').value = r.link1||'';
+  document.getElementById('fLink2').value = r.link2||'';
+  renderHistList(r.hist||[]);
+  const ns = NEXT_STEPS[r.etapa];
+  if(ns){
+    document.getElementById('nextStepBox').style.display = 'block';
+    document.getElementById('nextStepTxt').textContent = ns;
+  } else {
+    document.getElementById('nextStepBox').style.display = 'none';
+  }
+  document.getElementById('overlay').classList.add('open');
+}
+
+function renderHistList(hist){
+  const hl = document.getElementById('histList');
+  hl.innerHTML = hist.length
+    ? hist.map(h=>`<div class="hist-item"><span class="hist-date">${h.dt}</span><span class="hist-txt">${h.txt}</span></div>`).join('')
+    : '<div style="font-size:11px;color:var(--slate-light);padding:4px 0">Nenhum registro ainda.</div>';
+  hl.scrollTop = hl.scrollHeight;
+}
+
+function addHist(){
+  const inp = document.getElementById('histInput');
+  const txt = inp.value.trim();
+  if(!txt) return;
+  if(editId){
+    const r = data.find(x=>x.id===editId);
+    if(r){ r.hist = r.hist||[]; r.hist.push({txt,dt:today()}); save(); renderHistList(r.hist); }
+  }
+  inp.value = '';
+}
+
+document.getElementById('histInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addHist(); });
+
+function savePros(){
+  const nom = document.getElementById('fNome').value.trim();
+  if(!nom){ document.getElementById('fNome').focus(); return; }
+  const r = {
+    nome:nom, espec:document.getElementById('fEspec').value.trim(),
+    pais:document.getElementById('fPais').value, uf:document.getElementById('fUF').value.trim(),
+    regiao:document.getElementById('fRegiao').value.trim(), cidade:document.getElementById('fCidade').value.trim(),
+    insta:document.getElementById('fInsta').value.trim(), linkedin:document.getElementById('fLinkedin').value.trim(),
+    contato:document.getElementById('fContato').value.trim(), origem:document.getElementById('fOrigem').value,
+    temp:document.getElementById('fTemp').value, etapa:document.getElementById('fEtapa').value,
+    evid1:document.getElementById('fEvid1').value.trim(), evid2:document.getElementById('fEvid2').value.trim(),
+    notas:document.getElementById('fNotas').value.trim(), link1:document.getElementById('fLink1').value.trim(),
+    link2:document.getElementById('fLink2').value.trim(),
+  };
+  if(editId){
+    const idx = data.findIndex(x=>x.id===editId);
+    if(idx>=0){ data[idx] = {...data[idx],...r}; }
+  } else {
+    const maxId = data.length ? Math.max(...data.map(x=>x.id)) : 0;
+    data.push({id:maxId+1,...r,hist:[{txt:'Prospect adicionado',dt:today()}]});
+  }
+  save(); closeModal(); render();
+}
+
+function deletePros(){
+  if(!editId || !confirm('Remover este prospect permanentemente?')) return;
+  data = data.filter(x=>x.id!==editId);
+  save(); closeModal(); render();
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+  editId = null;
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+render();
+</script>
+</body>
+</html>
