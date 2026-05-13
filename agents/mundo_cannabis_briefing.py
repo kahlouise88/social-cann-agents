@@ -294,9 +294,10 @@ def main():
     """Main function"""
     print(f"[{datetime.now().isoformat()}] Starting Mundo Cannabis Briefing Agent...")
 
-    # Fetch recent news
+    # Fetch recent news ONCE - store globally
     print("Fetching recent news...")
     recent_news = fetch_recent_news()
+    print(f"✓ Fetched {len(recent_news)} articles")
 
     # Generate briefing
     print("Generating briefing from Claude...")
@@ -305,9 +306,8 @@ def main():
     if not briefing:
         print("✗ Failed to generate briefing")
         send_telegram_message(
-            "❌ <b>Mundo Cannabis Briefing Error</b>\n\n"
-            "Failed to generate briefing. Please check the logs.",
-            parse_mode="HTML",
+            "❌ Mundo Cannabis Briefing Error\n\n"
+            "Failed to generate briefing. Please check the logs."
         )
         sys.exit(1)
 
@@ -319,48 +319,62 @@ def main():
     day_name = datetime.now().strftime("%A")
     date_str = datetime.now().strftime("%d/%m/%Y")
     header = (
-        f"📰 <b>Mundo Cannabis Briefing — {date_str}</b>\n\n"
+        f"📰 MUNDO CANNABIS BRIEFING — {date_str}\n\n"
         "Notícias da semana em cannabis medicinal para médicos prescritores.\n"
-        "Tom: analítico · estratégico · sóbrio · baseado em evidência.\n"
-        "Cobertura: Brasil, UK, Espanha, Holanda, Alemanha + Europa\n\n"
+        "Cobertura: Brasil, UK, Espanha, Holanda, Alemanha + Europa"
     )
 
     # Send header first
-    send_telegram_message(header, parse_mode="HTML")
+    send_telegram_message(header)
 
     # Send main content messages
     for i, msg in enumerate(telegram_messages, 1):
-        send_telegram_message(msg, parse_mode="HTML")
+        send_telegram_message(msg)
         print(f"Sent message {i}/{len(telegram_messages)}")
 
-    # Build links reference section - simple format that Telegram recognizes
-    links_section = "\n🔗 LINKS DE REFERÊNCIA E FONTES:\n\n"
-    if recent_news:
-        for i, article in enumerate(recent_news[:20], 1):
+    # BUILD LINKS SECTION - CRITICAL
+    print(f"\nBuilding links section from {len(recent_news)} articles...")
+    links_messages = []
+    current_links = "🔗 LINKS E FONTES:\n\n"
+
+    if recent_news and len(recent_news) > 0:
+        for i, article in enumerate(recent_news[:25], 1):
             title = article.get('title', 'Notícia')
             url = article.get('url', '')
             source = article.get('source', {}).get('name', 'Unknown')
-            pub_date = article.get('publishedAt', '').split('T')[0]  # Just the date part
+            pub_date = article.get('publishedAt', '').split('T')[0]
 
-            if url:
-                # Truncate long titles for Telegram
-                title_short = (title[:50] + "...") if len(title) > 50 else title
-                links_section += f"{i}. {title_short}\n"
-                links_section += f"   Link: {url}\n"
-                links_section += f"   📅 {pub_date} | 📰 {source}\n\n"
+            if url:  # ONLY if URL exists
+                title_short = (title[:45] + "...") if len(title) > 45 else title
 
-    # Send links section without special formatting - Telegram will auto-detect URLs
-    if len(links_section) > 50:  # If there are actual links
-        send_telegram_message(links_section)
+                new_entry = f"\n{i}. {title_short}\n🔗 {url}\n📅 {pub_date} | {source}"
+
+                # If message would be too long, split it
+                if len(current_links + new_entry) > 3000:
+                    links_messages.append(current_links)
+                    current_links = "🔗 LINKS E FONTES (continuação):\n" + new_entry
+                else:
+                    current_links += new_entry
+
+        # Add remaining links
+        if current_links:
+            links_messages.append(current_links)
+
+    # SEND ALL LINKS MESSAGES
+    print(f"Sending {len(links_messages)} link messages...")
+    for i, link_msg in enumerate(links_messages, 1):
+        print(f"Sending links message {i}/{len(links_messages)}")
+        send_telegram_message(link_msg)
+        print(f"✓ Sent links message {i}")
 
     # Send footer
     footer = (
         "\n---\n"
-        "📱 <b>Próxima execução:</b> Quarta e sexta-feira às 6h (UTC)\n"
-        "✉️ Dúvidas? Responde esse bot.\n\n"
-        "#CannabisMedicinal #MédicoPrescritor #Brasil #UK #Espanha #Holanda #Alemanha"
+        "📱 Próxima execução: Quarta e sexta-feira às 6h\n"
+        "Dúvidas? Responde esse bot.\n"
+        "#CannabisMedicinal #MédicoPrescritor"
     )
-    send_telegram_message(footer, parse_mode="HTML")
+    send_telegram_message(footer)
 
     print(f"[{datetime.now().isoformat()}] Mundo Cannabis Briefing Agent completed successfully ✓")
 
