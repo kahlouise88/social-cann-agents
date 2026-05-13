@@ -50,81 +50,141 @@ def send_telegram_message(text: str, parse_mode: str = "HTML") -> bool:
 
 
 def fetch_recent_news() -> list:
-    """Fetch this week's news about cannabis medicinal from PRINCIPAIS countries + Europe"""
+    """
+    AUDITED NEWS FETCH - 2026 ONLY
+
+    REQUIREMENTS (OBRIGATÓRIO):
+    - APENAS notícias de 2026
+    - TODAS com URL/link verificável
+    - Cobertura: Brasil, UK, Espanha, Holanda, Alemanha + Europa
+    - Log explícito de cada notícia
+    """
     api_key = os.getenv("NEWSAPI_KEY")
     if not api_key:
-        print("⚠ NEWSAPI_KEY not set — usando conhecimento base do Claude")
+        print("❌ NEWSAPI_KEY not set")
         return []
 
     try:
         from datetime import datetime, timedelta
 
-        # Get news from last 30 days (wider range for international coverage + to find more recent news)
+        # AUDITOR: Buscar TUDO de 2026
         today = datetime.utcnow()
-        thirty_days_ago = today - timedelta(days=30)
-        from_date = thirty_days_ago.strftime("%Y-%m-%d")
+        year_start = datetime(2026, 1, 1)
+        from_date = year_start.strftime("%Y-%m-%d")
+        to_date = today.strftime("%Y-%m-%d")
+
+        print(f"\n🔍 AUDITORIA DE NOTÍCIAS")
+        print(f"📅 Período: {from_date} a {to_date}")
+        print(f"🌍 Regiões: Brasil, UK, Espanha, Holanda, Alemanha + Europa")
+        print(f"✅ Critério: APENAS 2026 | URL OBRIGATÓRIO\n")
 
         base_url = "https://newsapi.org/v2/everything"
 
-        # PRINCIPAIS countries + rest of Europe
-        # Priority order: Brasil, UK, Spain, Netherlands, Germany, then rest of Europe
         queries = [
-            # BRASIL (Portuguese)
-            ("cannabis medicinal regulação Brasil", "pt"),
-            ("cannabis medicinal pesquisa Brasil", "pt"),
-            ("cannabis medicinal mercado Brasil", "pt"),
+            # BRASIL (Portuguese) - PRIORIDADE 1
+            ("cannabis medicinal regulação Brasil 2026", "pt"),
+            ("cannabis medicinal mercado Brasil 2026", "pt"),
+            ("cannabis medicinal pesquisa Brasil 2026", "pt"),
 
-            # UK (English)
-            ("medical cannabis UK regulation", "en"),
-            ("cannabis medicinal research UK", "en"),
+            # UK (English) - PRIORIDADE 1
+            ("medical cannabis UK 2026", "en"),
+            ("cannabis regulation UK 2026", "en"),
 
-            # ESPAÑA (Spanish)
-            ("cannabis medicinal regulación España", "es"),
-            ("cannabis medicinal investigación España", "es"),
+            # ESPAÑA (Spanish) - PRIORIDADE 1
+            ("cannabis medicinal España 2026", "es"),
+            ("cannabis regulación España 2026", "es"),
 
-            # NETHERLANDS (English/Dutch focus)
-            ("medical cannabis Netherlands", "en"),
-            ("cannabis regulation Netherlands", "en"),
+            # NETHERLANDS - PRIORIDADE 1
+            ("medical cannabis Netherlands 2026", "en"),
+            ("cannabis Holanda 2026", "en"),
 
-            # DEUTSCHLAND (English/German focus)
-            ("medical cannabis Germany regulation", "en"),
-            ("cannabis medicinal Deutschland", "de"),
+            # DEUTSCHLAND - PRIORIDADE 1
+            ("medical cannabis Germany 2026", "en"),
+            ("cannabis medicinal Deutschland 2026", "de"),
 
-            # EUROPA GERAL (English)
+            # EUROPA GERAL
             ("medical cannabis Europe 2026", "en"),
-            ("cannabis medicinal European regulation", "en"),
-            ("cannabis research Europe 2026", "en"),
+            ("cannabis regulation Europe 2026", "en"),
         ]
 
         all_articles = []
-        article_count = 0
+        query_count = 0
 
         for query, language in queries:
-            params = {
-                "q": query,
-                "from": from_date,
-                "sortBy": "publishedAt",
-                "pageSize": 15,
-                "language": language,
-                "apiKey": api_key
-            }
-
             try:
+                params = {
+                    "q": query,
+                    "from": from_date,
+                    "to": to_date,
+                    "sortBy": "publishedAt",
+                    "pageSize": 20,
+                    "language": language,
+                    "apiKey": api_key
+                }
+
                 response = requests.get(base_url, params=params, timeout=10)
+
                 if response.status_code == 200:
                     articles = response.json().get("articles", [])
+                    print(f"   Query: '{query}' ({language}) → {len(articles)} notícias")
                     all_articles.extend(articles)
-                    article_count += len(articles)
-                    print(f"✓ {len(articles)} articles: '{query}' ({language})")
+                    query_count += 1
                 else:
-                    print(f"⚠ Error '{query}': {response.status_code}")
+                    print(f"   ❌ Query falhou: '{query}'")
+
             except Exception as e:
-                print(f"⚠ Failed '{query}': {e}")
+                print(f"   ❌ Erro: '{query}' - {e}")
+
+        print(f"\n📊 Total bruto: {len(all_articles)} artigos")
+
+        # ===== FILTRO OBRIGATÓRIO 2026 =====
+        articles_2026 = []
+        articles_other_years = []
+
+        for article in all_articles:
+            pub_date = article.get("publishedAt", "")
+            url = article.get("url", "")
+            title = article.get("title", "")
+
+            # Extract year from publishedAt (format: 2026-05-13T...)
+            if pub_date and len(pub_date) >= 4:
+                try:
+                    year = int(pub_date[:4])
+                except:
+                    year = 0
+            else:
+                year = 0
+
+            # CRITÉRIO 1: Deve ser 2026
+            # CRITÉRIO 2: Deve ter URL
+            if year == 2026 and url:
+                articles_2026.append(article)
+                print(f"   ✅ {pub_date[:10]} | {title[:60]}...")
+            else:
+                if year != 2026:
+                    articles_other_years.append({
+                        'year': year,
+                        'title': title[:50],
+                        'date': pub_date[:10] if pub_date else 'N/A'
+                    })
+
+        # AUDITORIA: Mostrar rejeitadas
+        if articles_other_years:
+            print(f"\n⚠️  REJEITADAS ({len(articles_other_years)} artigos fora de 2026):")
+            rejected_years = {}
+            for art in articles_other_years:
+                year = art['year']
+                if year not in rejected_years:
+                    rejected_years[year] = 0
+                rejected_years[year] += 1
+
+            for year in sorted(rejected_years.keys(), reverse=True):
+                print(f"   - {year}: {rejected_years[year]} artigos (DESCARTADOS)")
 
         # Remove duplicates by URL
         seen_urls = set()
         unique_articles = []
-        for article in all_articles:
+        for article in articles_2026:
             url = article.get("url")
             if url not in seen_urls:
                 seen_urls.add(url)
@@ -136,11 +196,14 @@ def fetch_recent_news() -> list:
             reverse=True
         )
 
-        print(f"✓ Total: {len(unique_articles)} unique articles from Brasil, UK, Spain, Netherlands, Germany + Europe")
-        return unique_articles[:30]  # Top 30
+        print(f"\n✅ RESULTADO FINAL: {len(unique_articles)} notícias válidas de 2026")
+        print(f"   - Todas com URL ✓")
+        print(f"   - Todas de 2026 ✓\n")
+
+        return unique_articles[:40]  # Top 40 de 2026
 
     except Exception as e:
-        print(f"✗ Error fetching news: {e}")
+        print(f"❌ ERRO CRÍTICO na busca: {e}")
         return []
 
 
