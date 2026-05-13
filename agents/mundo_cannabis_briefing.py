@@ -101,7 +101,7 @@ Comece a pesquisa agora."""
 
     try:
         message = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-opus-4-1",
             max_tokens=2500,
             messages=[{"role": "user", "content": prompt}],
         )
