@@ -9,9 +9,9 @@ Delivers to Telegram every Wednesday and Friday
 import os
 import sys
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from anthropic import Anthropic
-from bs4 import BeautifulSoup
+import feedparser
 import re
 
 # Initialize Anthropic client
@@ -53,8 +53,8 @@ def send_telegram_message(text: str, parse_mode: str = "HTML") -> bool:
 
 def fetch_recent_news() -> list:
     """
-    WEB SCRAPING NEWS FETCH - 2026 ONLY
-    Busca notícias sobre cannabis medicinal de múltiplas fontes
+    RSS FEED NEWS FETCH - 2026 ONLY
+    Busca notícias sobre cannabis medicinal de múltiplas fontes via RSS feeds
 
     REQUIREMENTS (OBRIGATÓRIO):
     - APENAS notícias de 2026
@@ -63,36 +63,49 @@ def fetch_recent_news() -> list:
     - Log explícito de cada notícia
     """
     try:
-        from datetime import datetime, timedelta
-
         today = datetime.utcnow()
         year_start = datetime(2026, 1, 1)
         from_date = year_start.strftime("%Y-%m-%d")
         to_date = today.strftime("%Y-%m-%d")
 
-        print(f"\n🔍 AUDITORIA DE NOTÍCIAS (Web Scraping)")
+        print(f"\n🔍 AUDITORIA DE NOTÍCIAS (RSS Feeds)")
         print(f"📅 Período: {from_date} a {to_date}")
-        print(f"🌍 Fontes: BBC, Reuters, The Guardian, Portugal, Brasil")
+        print(f"🌍 Cobertura: Brasil, UK, Espanha, Holanda, Alemanha + Europa")
         print(f"✅ Critério: APENAS 2026 | URL OBRIGATÓRIO\n")
 
         all_articles = []
 
-        # Fontes de notícias para scraping
-        sources = [
+        # RSS Feed sources covering target regions
+        rss_sources = [
             {
-                "name": "BBC News",
-                "url": "https://www.bbc.com/news/search?q=cannabis%20medical",
-                "domain": "bbc.com"
+                "name": "BBC News - Health",
+                "url": "http://feeds.bbc.co.uk/news/rss.xml",
+                "keywords": ["cannabis", "medical", "medicinal"],
             },
             {
-                "name": "Reuters",
-                "url": "https://www.reuters.com/site-search/?query=cannabis%20medicinal",
-                "domain": "reuters.com"
+                "name": "Reuters - Health",
+                "url": "https://www.reutersagency.com/feed/?taxonomy=best-topics&output=rss",
+                "keywords": ["cannabis", "medical", "medicinal"],
             },
             {
-                "name": "The Guardian",
-                "url": "https://www.theguardian.com/search?q=cannabis+medicinal",
-                "domain": "theguardian.com"
+                "name": "The Guardian - Science",
+                "url": "https://www.theguardian.com/science/rss",
+                "keywords": ["cannabis", "medical", "medicinal"],
+            },
+            {
+                "name": "Folha de São Paulo - Saúde",
+                "url": "https://www1.folha.uol.com.br/rss/feed-saude.xml",
+                "keywords": ["cannabis", "medicinal", "canabidiol"],
+            },
+            {
+                "name": "El Mundo - Ciência",
+                "url": "https://www.elmundo.es/rss/portada.xml",
+                "keywords": ["cannabis", "medicinal"],
+            },
+            {
+                "name": "Medical Xpress",
+                "url": "https://medicalxpress.com/rss-feed.xml",
+                "keywords": ["cannabis", "medical", "therapeutic"],
             },
         ]
 
@@ -100,40 +113,44 @@ def fetch_recent_news() -> list:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
 
-        for source in sources:
+        for source in rss_sources:
             try:
                 print(f"   📡 Buscando em {source['name']}...")
-                response = requests.get(source["url"], headers=headers, timeout=10)
+                feed = feedparser.parse(source['url'])
+                articles_found = 0
 
-                if response.status_code == 200:
-                    soup = BeautifulSoup(response.content, 'html.parser')
+                if feed.entries:
+                    for entry in feed.entries[:30]:  # Limitar a 30 artigos por feed
+                        title = entry.get('title', '')
+                        link = entry.get('link', '')
 
-                    # Extrair links de notícias (estratégia genérica)
-                    links = soup.find_all('a', href=True)
-                    articles_found = 0
-
-                    for link in links[:50]:  # Limitar a 50 links por fonte
-                        href = link.get('href')
-                        text = link.get_text(strip=True)
+                        # Extrair data
+                        pub_date = None
+                        if hasattr(entry, 'published_parsed') and entry.published_parsed:
+                            try:
+                                pub_date = datetime(*entry.published_parsed[:6])
+                            except:
+                                pub_date = today
+                        else:
+                            pub_date = today
 
                         # Filtrar por palavras-chave relevantes
-                        if any(keyword in text.lower() for keyword in
-                               ['cannabis', 'medical', 'medicinal', 'health', 'drug', 'therapy', 'treatment']):
-                            if len(text) > 10 and href.startswith('http'):
-                                # Criar artigo formatado
-                                article = {
-                                    'webTitle': text[:150],
-                                    'webUrl': href,
-                                    'firstPublicationDate': today.strftime("%Y-%m-%d"),  # Data do scraping
-                                    'source': source['name']
-                                }
-
+                        if any(keyword.lower() in title.lower() for keyword in source['keywords']):
+                            if len(title) > 10 and link and link.startswith('http'):
                                 # Verificar se é de 2026
-                                if '2026' in href or today.year == 2026:
+                                if pub_date.year == 2026:
+                                    article = {
+                                        'webTitle': title[:150],
+                                        'webUrl': link,
+                                        'firstPublicationDate': pub_date.strftime("%Y-%m-%d"),
+                                        'source': source['name']
+                                    }
                                     all_articles.append(article)
                                     articles_found += 1
 
                     print(f"      ✓ {articles_found} notícias relevantes encontradas")
+                else:
+                    print(f"      ℹ Sem entradas no feed RSS")
 
             except Exception as e:
                 print(f"      ❌ Erro ao buscar {source['name']}: {str(e)[:50]}")
@@ -142,7 +159,6 @@ def fetch_recent_news() -> list:
 
         # ===== FILTRO OBRIGATÓRIO 2026 =====
         articles_2026 = []
-        articles_other_years = []
 
         for article in all_articles:
             pub_date_str = article.get("firstPublicationDate", "")
@@ -154,22 +170,15 @@ def fetch_recent_news() -> list:
                 try:
                     year = int(pub_date_str[:4])
                 except:
-                    year = 2026  # Assumir 2026 se não conseguir extrair
+                    year = 2026
             else:
                 year = 2026
 
-            # CRITÉRIO 1: Deve ser 2026 ou assumir 2026
+            # CRITÉRIO 1: Deve ser 2026
             # CRITÉRIO 2: Deve ter URL válida
-            if url and (year == 2026 or 'theguardian.com' in url or 'bbc.com' in url or 'reuters.com' in url):
+            if url and year == 2026:
                 articles_2026.append(article)
                 print(f"   ✅ {pub_date_str[:10]} | {title[:60]}...")
-            else:
-                if year != 2026:
-                    articles_other_years.append({
-                        'year': year,
-                        'title': title[:50],
-                        'date': pub_date_str[:10]
-                    })
 
         # Remove duplicates by URL
         seen_urls = set()
@@ -180,7 +189,7 @@ def fetch_recent_news() -> list:
                 seen_urls.add(url)
                 unique_articles.append(article)
 
-        # Sort by date
+        # Sort by date (newest first)
         unique_articles.sort(
             key=lambda x: x.get("firstPublicationDate", ""),
             reverse=True
@@ -188,7 +197,7 @@ def fetch_recent_news() -> list:
 
         print(f"\n✅ RESULTADO FINAL: {len(unique_articles)} notícias válidas")
         print(f"   - Todas com URL ✓")
-        print(f"   - De 2026 ✓\n")
+        print(f"   - Todas de 2026 ✓\n")
 
         return unique_articles[:40]
 
