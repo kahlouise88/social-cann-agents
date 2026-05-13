@@ -333,8 +333,8 @@ def main():
         send_telegram_message(msg, parse_mode="HTML")
         print(f"Sent message {i}/{len(telegram_messages)}")
 
-    # Build links reference section
-    links_section = "\n<b>🔗 LINKS DE REFERÊNCIA E FONTES:</b>\n\n"
+    # Build links reference section - simple format that Telegram recognizes
+    links_section = "\n🔗 LINKS DE REFERÊNCIA E FONTES:\n\n"
     if recent_news:
         for i, article in enumerate(recent_news[:20], 1):
             title = article.get('title', 'Notícia')
@@ -344,13 +344,14 @@ def main():
 
             if url:
                 # Truncate long titles for Telegram
-                title_short = (title[:60] + "...") if len(title) > 60 else title
-                links_section += f"{i}. <a href='{url}'>{title_short}</a>\n"
+                title_short = (title[:50] + "...") if len(title) > 50 else title
+                links_section += f"{i}. {title_short}\n"
+                links_section += f"   Link: {url}\n"
                 links_section += f"   📅 {pub_date} | 📰 {source}\n\n"
 
-    # Send links section
+    # Send links section without special formatting - Telegram will auto-detect URLs
     if len(links_section) > 50:  # If there are actual links
-        send_telegram_message(links_section, parse_mode="HTML")
+        send_telegram_message(links_section)
 
     # Send footer
     footer = (
