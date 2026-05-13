@@ -50,31 +50,67 @@ def send_telegram_message(text: str, parse_mode: str = "HTML") -> bool:
 
 
 def fetch_recent_news() -> list:
-    """Fetch recent news about cannabis medicinal from NewsAPI"""
+    """Fetch this week's news about cannabis medicinal from NewsAPI"""
     api_key = os.getenv("NEWSAPI_KEY")
     if not api_key:
         print("⚠ NEWSAPI_KEY not set — usando conhecimento base do Claude")
         return []
 
     try:
-        base_url = "https://newsapi.org/v2/everything"
-        params = {
-            "q": "cannabis medicinal saúde",
-            "sortBy": "publishedAt",
-            "pageSize": 15,
-            "apiKey": api_key
-        }
+        from datetime import datetime, timedelta
 
-        response = requests.get(base_url, params=params, timeout=10)
-        if response.status_code == 200:
-            articles = response.json().get("articles", [])
-            print(f"✓ Fetched {len(articles)} articles from NewsAPI")
-            return articles
-        else:
-            print(f"⚠ NewsAPI error: {response.status_code}")
-            return []
+        # Get news from last 7 days
+        today = datetime.utcnow()
+        week_ago = today - timedelta(days=7)
+        from_date = week_ago.strftime("%Y-%m-%d")
+        to_date = today.strftime("%Y-%m-%d")
+
+        base_url = "https://newsapi.org/v2/everything"
+
+        # Multiple searches for comprehensive coverage
+        queries = [
+            "cannabis medicinal regulação Brasil",
+            "cannabis medicinal pesquisa científica",
+            "cannabis medicinal mercado saúde",
+            "cannabis medicinal médicos prescritores",
+            "CBD THC terapêutico"
+        ]
+
+        all_articles = []
+
+        for query in queries:
+            params = {
+                "q": query,
+                "from": from_date,
+                "to": to_date,
+                "sortBy": "relevancy",
+                "pageSize": 10,
+                "language": "pt",
+                "apiKey": api_key
+            }
+
+            response = requests.get(base_url, params=params, timeout=10)
+            if response.status_code == 200:
+                articles = response.json().get("articles", [])
+                all_articles.extend(articles)
+                print(f"✓ Fetched {len(articles)} articles for '{query}'")
+            else:
+                print(f"⚠ NewsAPI error for '{query}': {response.status_code}")
+
+        # Remove duplicates by URL
+        seen_urls = set()
+        unique_articles = []
+        for article in all_articles:
+            url = article.get("url")
+            if url not in seen_urls:
+                seen_urls.add(url)
+                unique_articles.append(article)
+
+        print(f"✓ Total: {len(unique_articles)} unique articles this week")
+        return unique_articles[:20]  # Top 20
+
     except Exception as e:
-        print(f"⚠ Error fetching news: {e}")
+        print(f"✗ Error fetching news: {e}")
         return []
 
 
@@ -93,19 +129,34 @@ def generate_briefing() -> str:
             if article.get('description'):
                 news_context += f"   Resumo: {article['description'][:200]}...\n"
 
-    prompt = f"""Você é o redator da newsletter semanal "Mundo Cannabis" — curadoria de cannabis medicinal para médicos prescritores no Brasil, escrita por Katharine Louise.
+    prompt = f"""Você é repórter da newsletter semanal "Mundo Cannabis" — cobertura jornalística de cannabis medicinal para médicos prescritores no Brasil, escrita por Katharine Louise.
 
-Seu trabalho esta semana: analisar as notícias recentes fornecidas abaixo e montar um briefing estruturado pronto para a newsletter.
+SUA MISSÃO ESTA SEMANA:
+Analisar as notícias DOS ÚLTIMOS 7 DIAS fornecidas abaixo e montar um BRIEFING JORNALÍSTICO — não é análise especulativa, é cobertura de fatos reais que aconteceram.
 
-REGRAS DE SELEÇÃO DE HISTÓRIAS:
-1. Escolha as 5-7 notícias mais relevantes para médicos prescritores brasileiros
-2. Priorize: regulação Brasil > evidência científica nova > mercado e tendências > contexto global
-3. Descarte: notícias muito internacionais sem impacto direto no Brasil, repetições de semanas anteriores, boatos não verificados
+REGRAS DE SELEÇÃO (Prioridade absoluta):
+1. Escolha as 5-7 histórias MAIS RELEVANTES para médicos prescritores brasileiros
+2. PRIORIZE:
+   - Regulação Brasil (decisões Anvisa, STJ, governo)
+   - Evidência científica nova (estudos, revisões sistemáticas)
+   - Mercado e tendências Brasil
+   - Contexto global COM impacto direto no Brasil
+3. DESCARTE:
+   - Notícias genéricas sem relevância clínica
+   - Sensacionalismo ou especulação
+   - Conteúdo duplicado
+   - Notícias muito antigas ou sem data
 
-REGRAS DE PESQUISA:
-- Use as notícias recentes fornecidas abaixo como fonte primária
-- Complemente com seu conhecimento base se necessário
-- Priorize fontes confiáveis: Agência Brasil, CNPL, Anvisa, Lancet, Nature, NEJM, ScienceDaily
+TOM JORNALÍSTICO:
+- Analítico, assertivo, baseado em fatos
+- Sem especulação — o que foi noticiado é noticiado
+- Contextualizar: por que essa notícia importa para médicos
+- Estrutura: fato → contexto → implicação prática
+
+CRITÉRIO ABSOLUTO:
+Você está funcionando como uma reporter profissional. Cada história deve responder: "Por que um médico que prescreve cannabis precisa saber disso?"
+
+NOTÍCIAS DA SEMANA PARA ANÁLISE:
 {news_context}
 
 ESTRUTURA OBRIGATÓRIA DO BRIEFING:
