@@ -49,11 +49,53 @@ def send_telegram_message(text: str, parse_mode: str = "HTML") -> bool:
         return False
 
 
+def fetch_recent_news() -> list:
+    """Fetch recent news about cannabis medicinal from NewsAPI"""
+    api_key = os.getenv("NEWSAPI_KEY")
+    if not api_key:
+        print("⚠ NEWSAPI_KEY not set — usando conhecimento base do Claude")
+        return []
+
+    try:
+        base_url = "https://newsapi.org/v2/everything"
+        params = {
+            "q": "cannabis medicinal saúde",
+            "sortBy": "publishedAt",
+            "pageSize": 15,
+            "apiKey": api_key
+        }
+
+        response = requests.get(base_url, params=params, timeout=10)
+        if response.status_code == 200:
+            articles = response.json().get("articles", [])
+            print(f"✓ Fetched {len(articles)} articles from NewsAPI")
+            return articles
+        else:
+            print(f"⚠ NewsAPI error: {response.status_code}")
+            return []
+    except Exception as e:
+        print(f"⚠ Error fetching news: {e}")
+        return []
+
+
 def generate_briefing() -> str:
     """Generate briefing using Claude"""
-    prompt = """Você é o redator da newsletter semanal "Mundo Cannabis" — curadoria de cannabis medicinal para médicos prescritores no Brasil, escrita por Katharine Louise.
+    # Fetch recent news
+    recent_news = fetch_recent_news()
 
-Seu trabalho esta semana: pesquisar as notícias mais recentes sobre cannabis medicinal no Brasil e mundialmente, e montar um briefing estruturado pronto para a newsletter.
+    news_context = ""
+    if recent_news:
+        news_context = "\n\nNOTÍCIAS RECENTES PARA ANÁLISE:\n"
+        for i, article in enumerate(recent_news[:10], 1):
+            news_context += f"\n{i}. {article.get('title', 'Sem título')}\n"
+            news_context += f"   Fonte: {article.get('source', {}).get('name', 'Unknown')}\n"
+            news_context += f"   Data: {article.get('publishedAt', 'Unknown')}\n"
+            if article.get('description'):
+                news_context += f"   Resumo: {article['description'][:200]}...\n"
+
+    prompt = f"""Você é o redator da newsletter semanal "Mundo Cannabis" — curadoria de cannabis medicinal para médicos prescritores no Brasil, escrita por Katharine Louise.
+
+Seu trabalho esta semana: analisar as notícias recentes fornecidas abaixo e montar um briefing estruturado pronto para a newsletter.
 
 REGRAS DE SELEÇÃO DE HISTÓRIAS:
 1. Escolha as 5-7 notícias mais relevantes para médicos prescritores brasileiros
@@ -61,9 +103,10 @@ REGRAS DE SELEÇÃO DE HISTÓRIAS:
 3. Descarte: notícias muito internacionais sem impacto direto no Brasil, repetições de semanas anteriores, boatos não verificados
 
 REGRAS DE PESQUISA:
-- Use seu conhecimento até a data de corte (setembro 2024)
-- Se não souber de notícias muito recentes, seja honesto sobre isso
+- Use as notícias recentes fornecidas abaixo como fonte primária
+- Complemente com seu conhecimento base se necessário
 - Priorize fontes confiáveis: Agência Brasil, CNPL, Anvisa, Lancet, Nature, NEJM, ScienceDaily
+{news_context}
 
 ESTRUTURA OBRIGATÓRIA DO BRIEFING:
 
