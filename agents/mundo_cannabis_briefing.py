@@ -59,10 +59,10 @@ def fetch_recent_news() -> list:
     try:
         from datetime import datetime, timedelta
 
-        # Get news from last 14 days (wider range for international coverage)
+        # Get news from last 30 days (wider range for international coverage + to find more recent news)
         today = datetime.utcnow()
-        two_weeks_ago = today - timedelta(days=14)
-        from_date = two_weeks_ago.strftime("%Y-%m-%d")
+        thirty_days_ago = today - timedelta(days=30)
+        from_date = thirty_days_ago.strftime("%Y-%m-%d")
 
         base_url = "https://newsapi.org/v2/everything"
 
@@ -151,13 +151,21 @@ def generate_briefing() -> str:
 
     news_context = ""
     if recent_news:
-        news_context = "\n\nNOTÍCIAS RECENTES PARA ANÁLISE:\n"
-        for i, article in enumerate(recent_news[:10], 1):
-            news_context += f"\n{i}. {article.get('title', 'Sem título')}\n"
-            news_context += f"   Fonte: {article.get('source', {}).get('name', 'Unknown')}\n"
-            news_context += f"   Data: {article.get('publishedAt', 'Unknown')}\n"
-            if article.get('description'):
-                news_context += f"   Resumo: {article['description'][:200]}...\n"
+        news_context = "\n\n📰 NOTÍCIAS RECENTES PARA ANÁLISE (COM LINKS VERIFICÁVEIS):\n"
+        for i, article in enumerate(recent_news[:15], 1):
+            title = article.get('title', 'Sem título')
+            source = article.get('source', {}).get('name', 'Unknown')
+            pub_date = article.get('publishedAt', 'Unknown')
+            url = article.get('url', '')
+            description = article.get('description', '')
+
+            news_context += f"\n{i}. {title}\n"
+            news_context += f"   📅 Data: {pub_date}\n"
+            news_context += f"   📰 Fonte: {source}\n"
+            if url:
+                news_context += f"   🔗 Link: {url}\n"
+            if description:
+                news_context += f"   📝 Resumo: {description[:250]}...\n"
 
     prompt = f"""Você é REPÓRTER INTERNACIONAL da newsletter "Mundo Cannabis" — cobertura de cannabis medicinal para médicos prescritores globais, escrita por Katharine Louise.
 
@@ -194,7 +202,12 @@ TOM JORNALÍSTICO PROFISSIONAL:
 CRITÉRIO ABSOLUTO:
 Você é uma repórter cobrindo cannabis medicinal GLOBALMENTE. Cada história deve responder: "Por que um médico que atua nessa área precisa saber disso?"
 
-NOTÍCIAS DOS ÚLTIMOS 14 DIAS (Brasil, UK, Espanha, Holanda, Alemanha + Europa):
+IMPORTANTE - LINKS E VERIFICAÇÃO:
+- TODA notícia que você mencionar deve incluir o LINK direto
+- Verifique a data da publicação — se estiver de 2024, mencione explicitamente
+- Cada história deve ter fonte + link claro para acesso
+
+NOTÍCIAS DOS ÚLTIMOS 30 DIAS (Brasil, UK, Espanha, Holanda, Alemanha + Europa):
 {news_context}
 
 ESTRUTURA OBRIGATÓRIA DO BRIEFING:
