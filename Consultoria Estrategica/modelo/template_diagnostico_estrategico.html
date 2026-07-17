@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Diagnóstico Estratégico de Marca Digital — {{NOME_CLIENTE}}</title>
+<style>
+  /* ============================================================
+     MODELO — CONSULTORIA ESTRATÉGICA · ZEN MODERNA
+     Identidade visual extraída de Zen_Moderna_Playbook_Comercial.pdf
+     Estrutura de conteúdo extraída de Diagnostico_Estrategico_Dra_Vanessa_Campos.pdf
+     + Partes IV–IX criadas para completar as 30+ páginas do produto
+     "Consultoria Estratégica" (ver GUIA_DE_USO.md nesta mesma pasta)
+     ============================================================ */
+
+  :root{
+    --cream:      #F7F1E7;
+    --cream-2:    #EFE3D1;   /* cards claros */
+    --espresso:   #35251A;   /* painéis escuros */
+    --espresso-2: #4A3628;   /* cards dentro de painel escuro */
+    --terracotta: #BE5C2E;
+    --gold:       #C9A24B;
+    --sage:       #7C8B6F;   /* status "ok / resolvido" */
+    --ink:        #2B1D13;
+    --muted:      #8A7A68;
+    --border:     #E1D2B8;
+    --cream-text: #F3E9DA;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#ddd; }
+  body{
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    color: var(--ink);
+  }
+  .sans{ font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+
+  @page{ size:A4; margin:0; }
+  @media print{
+    body{ background:none; }
+    .page{ box-shadow:none !important; margin:0 !important; }
+  }
+
+  .page{
+    width:210mm; min-height:297mm;
+    background:var(--cream);
+    padding:20mm 18mm 16mm 18mm;
+    position:relative;
+    page-break-after:always;
+    margin:0 auto 8mm auto;
+    box-shadow:0 0 12px rgba(0,0,0,.15);
+  }
+  .page.dark{ background:var(--espresso); color:var(--cream-text); }
+
+  .footer{
+    position:absolute; left:18mm; right:18mm; bottom:10mm;
+    display:flex; justify-content:space-between;
+    font-family:-apple-system,Helvetica,Arial,sans-serif;
+    font-size:8pt; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .page.dark .footer{ color:#B8A48C; }
+
+  .eyebrow{
+    font-family:-apple-system,Helvetica,Arial,sans-serif;
+    font-size:9.5pt; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--terracotta); font-weight:600; margin:0 0 10px 0;
+  }
+  .page.dark .eyebrow{ color:var(--gold); }
+
+  h1{ font-size:27pt; line-height:1.15; margin:0 0 14px 0; font-weight:400; color:var(--ink); }
+  .page.dark h1{ color:var(--cream-text); }
+  h2{ font-size:15pt; font-weight:600; margin:0 0 10px 0; color:var(--ink); }
+  .page.dark h2{ color:var(--cream-text); }
+  .rule{ width:56px; height:2px; background:var(--gold); margin:0 0 16px 0; }
+
+  p{ font-family:-apple-system,Helvetica,Arial,sans-serif; font-size:10.5pt; line-height:1.65; color:#4A3B2C; margin:0 0 12px 0; }
+  .page.dark p{ color:#D9C9B4; }
+  strong{ color:var(--ink); font-weight:700; }
+  .page.dark strong{ color:var(--cream-text); }
+  em.hl{ color:var(--terracotta); font-style:italic; }
+  .page.dark em.hl{ color:var(--gold); }
+
+  /* citação de abertura */
+  .quote-block{
+    background:var(--cream-2); border-left:3px solid var(--gold);
+    padding:18px 22px; margin:0 0 22px 0;
+  }
+  .quote-block p{ font-family:Georgia,serif; font-style:italic; font-size:12.5pt; color:var(--ink); margin:0; }
+
+  /* tabela padrão (perfil, KPIs, benchmark etc.) */
+  table.info{ width:100%; border-collapse:collapse; font-family:-apple-system,Helvetica,Arial,sans-serif; font-size:9.7pt; }
+  table.info td{ padding:9px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.info tr td:first-child{
+    width:34%; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-size:8.3pt;
+  }
+  table.info tr td:last-child{ color:var(--ink); }
+
+  /* tabela com cabeçalho escuro (framework, cronograma, referência) */
+  table.dark-head{ width:100%; border-collapse:collapse; font-family:-apple-system,Helvetica,Arial,sans-serif; font-size:9.3pt; }
+  table.dark-head th{
+    background:var(--espresso); color:var(--cream-text);
+    text-align:left; padding:8px 10px; font-size:8.3pt; letter-spacing:.08em; text-transform:uppercase; font-weight:600;
+  }
+  table.dark-head td{ padding:9px 10px; border-bottom:1px solid var(--border); }
+
+  /* status pill (crítico / atenção / ok) */
+  .status{ display:inline-flex; align-items:center; gap:6px; font-weight:600; font-size:9pt; }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .dot.critico{ background:var(--terracotta); }
+  .dot.atencao{ background:var(--gold); }
+  .dot.ok{ background:var(--sage); }
+
+  /* box de teses / avisos (painel escuro) */
+  .thesis-box{
+    background:var(--espresso); color:var(--cream-text); border-radius:6px;
+    padding:20px 24px; margin-top:8px;
+  }
+  .thesis-box .label{
+    font-family:-apple-system,Helvetica,Arial,sans-serif; font-size:9pt; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:12px;
+  }
+  .thesis-box p{ color:#E7D9C4; margin-bottom:10px; }
+  .thesis-box p:last-child{ margin-bottom:0; }
+
+  /* callout claro com barra lateral (recomendação / o que prejudica) */
+  .callout{ background:var(--cream-2); border-left:3px solid var(--terracotta); padding:16px 20px; margin:16px 0; }
+  .callout.gold{ border-left-color:var(--gold); }
+  .callout .label{
+    font-family:-apple-system,Helvetica,Arial,sans-serif; font-size:8.6pt; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--terracotta); font-weight:700; margin-bottom:8px;
+  }
+  .callout.gold .label{ color:#9C7A22; }
+
+  /* cards em linha (3 colunas) */
+  .cards-row{ display:flex; gap:14px; margin:16px 0; }
+  .card{ flex:1; background:#fff; border:1px solid var(--border); border-radius:6px; padding:14px 16px; }
+  .card h3{ font-size:12pt; color:var(--terracotta); margin:0 0 8px 0; font-weight:600; }
+  .card p{ font-size:9pt; margin:0; }
+
+  /* escada de serviços / fases (3 tiers) */
+  .tier{ background:#fff; border:1px solid var(--border); border-radius:6px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; gap:16px; }
+  .tier.mid{ background:var(--cream-2); }
+  .tier .badge{ font-family:-apple-system,sans-serif; font-size:7.8pt; letter-spacing:.1em; text-transform:uppercase; background:var(--espresso-2); color:#fff; padding:3px 9px; border-radius:3px; }
+  .tier .tier-body{ flex:1; }
+  .tier .tier-body .ttl{ font-family:Georgia,serif; font-size:12.5pt; color:var(--ink); }
+  .tier .tier-body .sub{ font-family:-apple-system,sans-serif; font-size:8.6pt; color:var(--muted); }
+  .tier .price{ font-family:Georgia,serif; font-size:13pt; color:var(--terracotta); }
+
+  /* passos numerados em círculo */
+  .steps-row{ display:flex; justify-content:space-between; margin:20px 0; text-align:center; }
+  .step{ flex:1; padding:0 6px; }
+  .step .circle{
+    width:38px; height:38px; border-radius:50%; background:var(--gold); color:#fff;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 8px auto;
+    font-family:Georgia,serif; font-size:13pt;
+  }
+  .step .circle.final{ background:var(--terracotta); }
+  .step .name{ font-family:Georgia,serif; font-size:10.5pt; color:var(--ink); }
+  .page.dark .step .name{ color:var(--cream-text); }
+  .step .desc{ font-family:-apple-system,sans-serif; font-size:8pt; color:var(--muted); margin-top:4px; }
+
+  /* gráfico de barras simples (comparativo) — editar valores/labels por cliente */
+  .chart{ margin:18px 0; }
+  .chart .bars{ display:flex; align-items:flex-end; gap:22px; height:150px; border-bottom:1px solid var(--border); padding:0 6px; }
+  .bar-group{ flex:1; display:flex; align-items:flex-end; gap:4px; height:100%; }
+  .bar{ flex:1; position:relative; border-radius:3px 3px 0 0; }
+  .bar.a{ background:#A38A63; }     /* estado atual */
+  .bar.b{ background:var(--gold); } /* estado recomendado */
+  .bar .val{ position:absolute; top:-16px; left:0; right:0; text-align:center; font-family:-apple-system,sans-serif; font-size:8pt; color:var(--ink); }
+  .chart .labels{ display:flex; gap:22px; padding:0 6px; margin-top:6px; }
+  .chart .labels div{ flex:1; text-align:center; font-family:-apple-system,sans-serif; font-size:7.6pt; color:var(--muted); }
+  .chart .legend{ display:flex; gap:18px; margin-top:10px; font-family:-apple-system,sans-serif; font-size:8pt; color:var(--muted); }
+  .chart .legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .chart .legend i{ width:10px; height:10px; display:inline-block; border-radius:2px; }
+  .chart .caption{ font-family:-apple-system,sans-serif; font-size:8.3pt; font-style:italic; color:var(--muted); margin-top:6px; }
+
+  .cover .brand{ font-family:-apple-system,sans-serif; font-size:9pt; letter-spacing:.2em; text-transform:uppercase; color:var(--terracotta); }
+  .cover .meta{ font-family:-apple-system,sans-serif; font-size:8pt; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+  .cover-center{ position:absolute; top:38%; left:18mm; right:18mm; }
+  .cover-top{ position:absolute; top:20mm; left:18mm; }
+  .cover-bottom{ position:absolute; bottom:14mm; left:18mm; right:18mm; }
+
+  .note{ font-family:-apple-system,sans-serif; font-size:8.3pt; font-style:italic; color:var(--muted); margin-top:6px; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     CAPA
+     ============================================================ -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="brand">Consultoria Estratégica · {{ANO}}</div>
+  </div>
+  <div class="cover-center">
+    <h1 style="font-size:36pt;">Diagnóstico<br><em style="color:var(--terracotta); font-style:italic;">Estratégico</em><br>de Marca Digital</h1>
+    <div class="rule" style="margin:18px 0;"></div>
+    <div style="font-family:Georgia,serif; font-size:16pt; color:var(--ink);">{{NOME_CLIENTE}}</div>
+    <div class="meta" style="margin-top:6px;">{{FORMACAO}} · {{ESPECIALIDADE}} · {{LOCALIZACAO}}</div>
+  </div>
+  <div class="cover-bottom">
+    <div class="meta">{{MES_ANO}} · Análise de {{CANAL_PRINCIPAL}} · Dossiê Confidencial</div>
+    <div class="meta" style="margin-top:4px;">Zen Moderna · by Kah Louise</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APRESENTAÇÃO DO DOCUMENTO
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Preâmbulo</div>
+  <h1>Apresentação do Documento</h1>
+  <div class="rule"></div>
+
+  <div class="quote-block">
+    <p><!-- INSTRUÇÃO: metáfora curta de abertura, no espírito "isto não é um manual, é um mapa" —
+         adaptar à realidade específica da cliente. -->
+    Este relatório não é um manual de redes sociais. É um mapa. Ele mostra onde {{NOME_CLIENTE}} está,
+    onde existe uma lacuna entre o que ela entrega e o que o mundo vê — e o caminho mais curto para fechar essa distância.</p>
+  </div>
+
+  <p><!-- INSTRUÇÃO: parágrafo de metodologia. Descrever exatamente quais dados foram usados
+       nesta análise específica — varia por cliente (prints de Instagram, insights, entrevista,
+       histórico de anúncios, ou apenas informações relatadas por texto). Nunca inventar dado que não foi enviado. -->
+    Este diagnóstico parte de {{FONTE_DE_DADOS}}. O propósito é transformar observações dispersas
+    em uma leitura estratégica única — uma que conecte o <em class="hl">o que</em> e o <em class="hl">como</em>.</p>
+
+  <p>A linguagem é direta. Não há rodeios, nem elogios decorativos. O que {{NOME_CLIENTE}} está
+    comprando ao receber este relatório é <strong>clareza</strong>.</p>
+
+  <p><!-- INSTRUÇÃO: parágrafo de destino/visão — o que muda se o plano for executado. --></p>
+
+  <div class="thesis-box">
+    <div class="label">As teses centrais deste diagnóstico</div>
+    <p><strong>Tese 1.</strong> <!-- maior problema de posicionamento identificado --></p>
+    <p><strong>Tese 2.</strong> <!-- ativo real subutilizado / diferencial não comunicado --></p>
+    <p><strong>Tese 3.</strong> <!-- gargalo operacional/de funil identificado --></p>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE I — PERFIL DA ANALISADA
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte I · O Cliente</div>
+  <h1>Perfil da Analisada</h1>
+  <div class="rule"></div>
+
+  <table class="info">
+    <tr><td>Nome / Marca</td><td>{{NOME_CLIENTE}}</td></tr>
+    <tr><td>Formação</td><td>{{FORMACAO}}</td></tr>
+    <tr><td>Diferencial / Método Próprio</td><td>{{METODO_PROPRIO}}</td></tr>
+    <tr><td>Estado Atual do Diferencial</td><td>{{ESTADO_METODO}}</td></tr>
+    <tr><td>Localização</td><td>{{LOCALIZACAO}}</td></tr>
+    <tr><td>Vinculação Comercial</td><td>{{VINCULACAO_COMERCIAL}}</td></tr>
+    <tr><td>Canal Principal</td><td>{{HANDLE}}</td></tr>
+    <tr><td>Base / Seguidores</td><td>{{SEGUIDORES}}</td></tr>
+    <tr><td>Alcance / Atividade (últimos 30 dias)</td><td>{{METRICAS_30D}}</td></tr>
+    <tr><td>Canais Ativos</td><td>{{CANAIS_ATIVOS}}</td></tr>
+    <tr><td>Plataformas Ausentes</td><td>{{CANAIS_AUSENTES}}</td></tr>
+    <tr><td>Investimento em Tráfego</td><td>{{INVESTIMENTO_TRAFEGO}}</td></tr>
+    <tr><td>Data da Análise</td><td>{{MES_ANO}}</td></tr>
+  </table>
+  <p class="note"><!-- INSTRUÇÃO: quando um dado não foi enviado, escrever "não informado" — nunca inventar número. --></p>
+
+  <p style="margin-top:16px;"><!-- INSTRUÇÃO: parágrafo sobre os ativos reais da profissional (o que já é forte e verdadeiro, comprovável). --></p>
+  <p><!-- INSTRUÇÃO: parágrafo de princípio — o trabalho estratégico é revelar o que já existe, não inventar. --></p>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE II — A BIO / PRIMEIRO CONTATO: A PRIMEIRA FRATURA
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte II · A Leitura Crítica</div>
+  <h1>{{CANAL_PRINCIPAL}}: A Primeira Fratura</h1>
+  <div class="rule"></div>
+
+  <p>A bio (ou a primeira tela de contato) é a decisão mais importante do perfil. É o único texto
+    que 100% dos novos visitantes leem. Abaixo, o texto atual:</p>
+
+  <div class="quote-block">
+    <p style="font-style:normal; font-family:-apple-system,sans-serif; font-size:10pt;">{{BIO_ATUAL}}</p>
+  </div>
+
+  <table class="dark-head">
+    <tr><th>Critério</th><th>Status</th><th>Observação</th></tr>
+    <tr><td>Clareza da oferta</td><td><span class="status"><span class="dot critico"></span>Crítico</span></td><td></td></tr>
+    <tr><td>Nome do método / diferencial</td><td><span class="status"><span class="dot critico"></span>Crítico</span></td><td></td></tr>
+    <tr><td>Prova social</td><td><span class="status"><span class="dot atencao"></span>Atenção</span></td><td></td></tr>
+    <tr><td>CTA principal</td><td><span class="status"><span class="dot atencao"></span>Atenção</span></td><td></td></tr>
+    <tr><td>Link / funil</td><td><span class="status"><span class="dot critico"></span>Crítico</span></td><td></td></tr>
+    <tr><td>Associação comercial</td><td><span class="status"><span class="dot atencao"></span>Atenção</span></td><td></td></tr>
+    <tr><td>Ícones e estética</td><td><span class="status"><span class="dot ok"></span>OK</span></td><td></td></tr>
+  </table>
+  <p class="note">Ajustar linhas e status conforme os critérios reais observados nesta cliente.</p>
+
+  <div class="callout">
+    <div class="label">O que está prejudicando</div>
+    <p style="margin:0;"><!-- INSTRUÇÃO: síntese do problema central da bio/primeiro contato. --></p>
+  </div>
+
+  <div class="callout gold">
+    <div class="label">Recomendação Imediata — Nova Bio Reposicionada</div>
+    <p style="margin:0; font-family:-apple-system,sans-serif;"><!-- INSTRUÇÃO: reescrever a bio pronta para uso. --></p>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE III — A FRATURA CENTRAL
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte III · A Fratura Central</div>
+  <h1>{{TITULO_FRATURA_CENTRAL}}</h1>
+  <div class="rule"></div>
+
+  <div class="quote-block">
+    <p><!-- INSTRUÇÃO: citação que nomeia com precisão o problema mais caro identificado
+         nesta cliente — o "erro estratégico único" central do diagnóstico. --></p>
+  </div>
+
+  <h2 style="margin-top:20px;"><!-- subtítulo explicando por que o problema é caro --></h2>
+  <p><!-- explicação --></p>
+  <ul class="sans" style="font-size:10.5pt; color:#4A3B2C; line-height:1.7;">
+    <li><strong><!-- consequência 1 --></strong> <!-- explicação --></li>
+    <li><strong><!-- consequência 2 --></strong> <!-- explicação --></li>
+    <li><strong><!-- consequência 3 --></strong> <!-- explicação --></li>
+  </ul>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<div class="page">
+  <div class="eyebrow">Parte III · A Fratura Central</div>
+  <h1 style="font-size:18pt;">O Custo Estratégico de Manter o Cenário Atual</h1>
+  <div class="rule"></div>
+
+  <div class="chart">
+    <div class="bars">
+      <!-- INSTRUÇÃO: 5–6 dimensões comparando "estado atual" (bar.a) vs "estado recomendado" (bar.b), escala 0–10.
+           Duplicar bar-group para cada dimensão e ajustar height (%) e val. -->
+      <div class="bar-group">
+        <div class="bar a" style="height:30%;"><span class="val">3</span></div>
+        <div class="bar b" style="height:90%;"><span class="val">9</span></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar a" style="height:30%;"><span class="val">3</span></div>
+        <div class="bar b" style="height:90%;"><span class="val">9</span></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar a" style="height:30%;"><span class="val">3</span></div>
+        <div class="bar b" style="height:90%;"><span class="val">9</span></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar a" style="height:30%;"><span class="val">3</span></div>
+        <div class="bar b" style="height:90%;"><span class="val">9</span></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar a" style="height:30%;"><span class="val">3</span></div>
+        <div class="bar b" style="height:90%;"><span class="val">9</span></div>
+      </div>
+    </div>
+    <div class="labels">
+      <div>Dimensão 1</div><div>Dimensão 2</div><div>Dimensão 3</div><div>Dimensão 4</div><div>Dimensão 5</div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#A38A63;"></i>Estado atual</span>
+      <span><i style="background:var(--gold);"></i>Estado recomendado</span>
+    </div>
+    <div class="caption">Gráfico 1 · Comparação entre o cenário atual e o cenário recomendado nas dimensões estratégicas centrais.</div>
+  </div>
+
+  <h2 style="margin-top:10px;">A Saída Já Existe — {{NOME_DA_SOLUCAO}}</h2>
+  <table class="dark-head">
+    <tr><th>Elemento</th><th>O que é</th><th>Como documentar</th></tr>
+    <tr><td>Nome oficial</td><td>Batismo da metodologia/oferta</td><td></td></tr>
+    <tr><td>Promessa central</td><td>Resultado específico entregue</td><td></td></tr>
+    <tr><td>Pilares técnicos</td><td>3 a 5 princípios que sustentam</td><td></td></tr>
+    <tr><td>Etapas do processo</td><td>Fases que a cliente percorre</td><td></td></tr>
+    <tr><td>Diferencial técnico</td><td>O que faz diferente de fato</td><td></td></tr>
+    <tr><td>Identidade visual</td><td>Selo, paleta, monograma</td><td></td></tr>
+  </table>
+
+  <div class="callout gold">
+    <div class="label">O que muda no dia seguinte</div>
+    <p style="margin:0;"><!-- INSTRUÇÃO: projeção concreta de resultado (busca, conversa com cliente, precificação). --></p>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE IV — ANÁLISE DE CONTEÚDO
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte IV · O Que Está Sendo Comunicado</div>
+  <h1>Análise de Conteúdo</h1>
+  <div class="rule"></div>
+  <p><!-- INSTRUÇÃO: introdução — o que o conteúdo publicado revela sobre a estratégia atual (ou a falta dela). --></p>
+
+  <div class="cards-row">
+    <div class="card"><h3>O que performa</h3><p><!-- formato/tema que mais gera alcance/engajamento --></p></div>
+    <div class="card"><h3>O que não performa</h3><p><!-- formato/tema que consome esforço sem retorno --></p></div>
+    <div class="card"><h3>Inconsistência</h3><p><!-- lacuna entre frequência ideal e real, ou mistura de identidade --></p></div>
+  </div>
+
+  <table class="info">
+    <tr><td>Formatos utilizados</td><td></td></tr>
+    <tr><td>Temas recorrentes</td><td></td></tr>
+    <tr><td>Frequência de publicação</td><td></td></tr>
+    <tr><td>Consistência de mensagem</td><td></td></tr>
+  </table>
+
+  <div class="callout">
+    <div class="label">Leitura estratégica</div>
+    <p style="margin:0;"></p>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE V — PÚBLICO & CONCORRÊNCIA
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte V · Contexto de Mercado</div>
+  <h1>Público &amp; Concorrência</h1>
+  <div class="rule"></div>
+  <p><!-- INSTRUÇÃO: quem de fato segue/compra hoje vs. o público ideal (ICP). --></p>
+
+  <table class="dark-head">
+    <tr><th>Referência</th><th>Diferencial dela</th><th>Posição de {{NOME_CLIENTE}} frente a ela</th></tr>
+    <tr><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td></tr>
+  </table>
+
+  <div class="callout">
+    <div class="label">Gap de posicionamento</div>
+    <p style="margin:0;"></p>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE VI — FUNIL & MONETIZAÇÃO
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte VI · Da Atenção à Receita</div>
+  <h1>Funil &amp; Monetização</h1>
+  <div class="rule"></div>
+  <p><!-- INSTRUÇÃO: descrever a jornada atual do lead — onde ela nasce, onde se perde, onde converte. --></p>
+
+  <h2 style="font-size:12.5pt; margin-top:18px;">Jornada Atual</h2>
+  <div class="steps-row">
+    <div class="step"><div class="circle">1</div><div class="name">Descoberta</div><div class="desc"></div></div>
+    <div class="step"><div class="circle">2</div><div class="name">Interesse</div><div class="desc"></div></div>
+    <div class="step"><div class="circle">3</div><div class="name">Contato</div><div class="desc"></div></div>
+    <div class="step"><div class="circle">4</div><div class="name">Decisão</div><div class="desc"></div></div>
+    <div class="step"><div class="circle final">5</div><div class="name">Conversão</div><div class="desc"></div></div>
+  </div>
+
+  <div class="callout">
+    <div class="label">Maior gargalo identificado</div>
+    <p style="margin:0;"></p>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE VII — ARQUITETURA DE OFERTA & PRECIFICAÇÃO
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte VII · Arquitetura de Oferta</div>
+  <h1>Oferta &amp; Precificação</h1>
+  <div class="rule"></div>
+  <p><!-- INSTRUÇÃO: lógica geral da escada de serviços recomendada. --></p>
+
+  <div class="tier">
+    <span class="badge">Entrada</span>
+    <div class="tier-body"><div class="ttl"></div><div class="sub"></div></div>
+    <div class="price"></div>
+  </div>
+  <div class="tier mid">
+    <span class="badge">Núcleo</span>
+    <div class="tier-body"><div class="ttl"></div><div class="sub"></div></div>
+    <div class="price"></div>
+  </div>
+  <div class="tier">
+    <span class="badge">Topo</span>
+    <div class="tier-body"><div class="ttl"></div><div class="sub"></div></div>
+    <div class="price"></div>
+  </div>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE VIII — PLANO DE AÇÃO EM 90 DIAS
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte VIII · Execução</div>
+  <h1>Plano de Ação em 90 Dias</h1>
+  <div class="rule"></div>
+
+  <table class="dark-head">
+    <tr><th>Fase</th><th>Prioridade</th><th>Entregável</th></tr>
+    <tr><td>Dias 1–30</td><td></td><td></td></tr>
+    <tr><td>Dias 31–60</td><td></td><td></td></tr>
+    <tr><td>Dias 61–90</td><td></td><td></td></tr>
+  </table>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     PARTE IX — INDICADORES DE SUCESSO
+     ============================================================ -->
+<div class="page">
+  <div class="eyebrow">Parte IX · Como Medir</div>
+  <h1>Indicadores de Sucesso</h1>
+  <div class="rule"></div>
+
+  <table class="dark-head">
+    <tr><th>Indicador</th><th>Situação Atual</th><th>Meta em 90 dias</th></tr>
+    <tr><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td></tr>
+  </table>
+  <div class="footer"><span>Zen Moderna · Consultoria Estratégica</span><span>{{NOME_CLIENTE}}</span></div>
+</div>
+
+<!-- ============================================================
+     FECHAMENTO
+     ============================================================ -->
+<div class="page dark">
+  <div class="cover-top"><div class="eyebrow">Zen Moderna · {{ANO}}</div></div>
+  <div class="cover-center">
+    <h1 style="font-size:30pt;"><!-- INSTRUÇÃO: linha de fechamento evocativa, específica desta cliente. --></h1>
+    <p style="font-style:italic; color:var(--gold); font-size:11pt; max-width:70%;">
+      Este diagnóstico se conclui na reunião de devolutiva, onde a proposta de continuidade
+      é desenhada sob medida para o momento atual da marca.
+    </p>
+  </div>
+  <div class="cover-bottom">
+    <div style="background:var(--espresso-2); display:inline-block; padding:10px 20px; border-radius:4px; font-family:-apple-system,sans-serif; font-size:9.5pt; color:#fff;">
+      WhatsApp · {{CONTATO_WHATSAPP}}
+    </div>
+    <div class="meta" style="margin-top:10px; color:#B8A48C;">Zen Moderna by Kah Louise</div>
+  </div>
+</div>
+
+</body>
+</html>
